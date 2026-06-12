@@ -46,6 +46,84 @@
   }
   .logo-text { font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
   .logo-text small { display: block; font-size: 11.5px; color: var(--text-3); font-weight: 500; margin-top: 1px; }
+  .header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .header-support-btn {
+    background: rgba(15,118,110,0.10);
+    border: 1px solid rgba(15,118,110,0.25);
+    color: var(--brand);
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+  .header-support-btn:hover { background: rgba(15,118,110,0.18); }
+
+  /* Floating support FAB */
+  .support-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(15,118,110,0.35);
+    z-index: 900;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .support-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(15,118,110,0.45);
+  }
+  .support-fab-icon { font-size: 18px; }
+
+  .support-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .support-opt {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .support-opt:hover { border-color: var(--brand); background: rgba(15,118,110,0.04); }
+  .support-opt-icon {
+    width: 38px; height: 38px;
+    background: rgba(15,118,110,0.12);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .support-opt-body { flex: 1; }
+  .support-opt-title { font-weight: 700; font-size: 14px; }
+  .support-opt-desc { color: var(--text-2); font-size: 12.5px; margin-top: 2px; }
+
   .header-meta { color: var(--text-2); font-size: 13px; text-align: right; }
   .header-meta strong { color: var(--text); font-weight: 600; display: block; }
   .header-meta .booth {
@@ -123,7 +201,6 @@
     border-radius: 16px;
     padding: 28px 32px;
     margin-bottom: 28px;
-    max-width: 820px;
     box-shadow: 0 4px 18px rgba(15,118,110,0.06);
   }
   .current-card .cc-top {
@@ -961,17 +1038,21 @@
   .leads-stats .stat .v small { font-size: 12px; color: var(--text-3); font-weight: 500; }
 
   .leads-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     background: white;
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
   }
-  .leads-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .leads-table { width: 100%; border-collapse: collapse; font-size: 11.5px; table-layout: auto; }
   .leads-table th, .leads-table td {
-    padding: 9px 12px;
+    padding: 9px 8px;
     text-align: left;
     border-bottom: 1px solid var(--border);
   }
+  .leads-table th:first-child, .leads-table td:first-child { padding-left: 14px; }
+  .leads-table th:last-child, .leads-table td:last-child { padding-right: 14px; text-align: center; }
   .leads-table th {
     background: #F8FAFC;
     color: var(--text-3);
@@ -1011,13 +1092,13 @@
   }
   .leads-table .opt.no { color: var(--text-3); }
   .leads-table .notes-cell {
-    max-width: 200px;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--text-2);
     font-style: italic;
-    font-size: 11.5px;
+    font-size: 11px;
   }
 
   .table-footer {
@@ -1272,10 +1353,65 @@
         <div class="logo-mark">TS</div>
         <div class="logo-text">TechSummit 2026<small>October 14 – 16  ·  Las Vegas Convention Center</small></div>
       </div>
-      <div class="header-meta">
-        <strong>Contoso Inc.</strong>
-        sarah.chen@contoso.com
-        <div><span class="booth">Booth #B-247 · West Hall</span></div>
+      <div class="header-actions">
+        <button class="header-support-btn" onclick="document.getElementById('supportBtn').click()">
+          <span style="font-size: 14px;">💬</span> Contact support
+        </button>
+        <div class="header-meta">
+          <strong>Contoso Inc.</strong>
+          sarah.chen@contoso.com
+          <div><span class="booth">Booth #B-247 · West Hall</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating support widget -->
+  <button class="support-fab" id="supportBtn" onclick="openSupport()" title="Contact support">
+    <span class="support-fab-icon">💬</span>
+    <span class="support-fab-label">Need help?</span>
+  </button>
+
+  <!-- Support modal -->
+  <div class="modal-overlay" id="supportModal">
+    <div class="modal" style="max-width: 460px;">
+      <div class="modal-head">
+        <h3>Contact support</h3>
+        <button class="close" onclick="closeSupport()">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-2); font-size: 13.5px; line-height: 1.55; margin-bottom: 18px;">Our support team is here to help with packages, devices, billing, or anything else about your event. Typical response time: <b>under 1 hour during event days</b>.</p>
+
+        <div class="support-options">
+          <a href="mailto:support@leadature.com" class="support-opt">
+            <span class="support-opt-icon">📧</span>
+            <div class="support-opt-body">
+              <div class="support-opt-title">Email us</div>
+              <div class="support-opt-desc">support@leadature.com</div>
+            </div>
+          </a>
+          <a href="tel:+18005551234" class="support-opt">
+            <span class="support-opt-icon">📞</span>
+            <div class="support-opt-body">
+              <div class="support-opt-title">Call us</div>
+              <div class="support-opt-desc">+1 (800) 555-1234 · 24/7 during events</div>
+            </div>
+          </a>
+          <a href="#" class="support-opt">
+            <span class="support-opt-icon">💬</span>
+            <div class="support-opt-body">
+              <div class="support-opt-title">Live chat</div>
+              <div class="support-opt-desc">Start a conversation with our team</div>
+            </div>
+          </a>
+          <a href="#" class="support-opt">
+            <span class="support-opt-icon">📚</span>
+            <div class="support-opt-body">
+              <div class="support-opt-title">Help center</div>
+              <div class="support-opt-desc">Browse guides &amp; FAQs</div>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -1434,11 +1570,9 @@
             <tr>
               <th>Name</th>
               <th>Company / Title</th>
-              <th>Location</th>
-              <th>Captured at</th>
-              <th>Device</th>
+              <th>Captured</th>
               <th>Follow-up</th>
-              <th>Product interest</th>
+              <th>Interest</th>
               <th>Notes</th>
               <th>Opt-in</th>
             </tr>
@@ -1581,15 +1715,6 @@
         <div class="table-footer">
           <div id="leadsCount">Showing 1–20 of 50 leads</div>
           <div class="pagination" id="leadsPagination"></div>
-          <div class="pagination">
-            <button>←</button>
-            <button class="active">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>…</button>
-            <button>21</button>
-            <button>→</button>
-          </div>
         </div>
       </div>
     </div>
@@ -1638,9 +1763,9 @@
               <div class="ship-opt-head">
                 <span class="ship-icon">📦</span>
                 <span class="ship-title">Ship to booth</span>
-                <span class="ship-tag">Recommended · No extra cost</span>
+                <span class="ship-tag">Recommended · Shipping at cost</span>
               </div>
-              <div class="ship-opt-desc">Devices delivered straight to your booth on event day. Pre-configured, ready to scan. Just pick them up at registration.</div>
+              <div class="ship-opt-desc">Devices delivered straight to your booth on event day. Pre-configured, ready to scan. Just pick them up at registration. Shipping billed at cost.</div>
             </div>
           </label>
 
@@ -1750,6 +1875,17 @@
   <script src="shared/leads.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => LR.exhibitor.init());
+
+    // Support modal
+    function openSupport() {
+      document.getElementById('supportModal').classList.add('open');
+    }
+    function closeSupport() {
+      document.getElementById('supportModal').classList.remove('open');
+    }
+    document.getElementById('supportModal').addEventListener('click', e => {
+      if (e.target.id === 'supportModal') closeSupport();
+    });
 
     // Shipping option toggle
     function selectShip(el, val) {

@@ -74,9 +74,7 @@
     return '<tr data-search="' + escapeHtml(searchText) + '">' +
       '<td class="nm"><b>' + escapeHtml(lead.name) + '</b>' + emailLine + '</td>' +
       '<td class="co"><b>' + escapeHtml(lead.company) + '</b>' + titleLine + '</td>' +
-      '<td>' + escapeHtml(lead.loc) + '</td>' +
       '<td>Oct ' + lead.day + ', ' + escapeHtml(lead.time) + '</td>' +
-      '<td class="device">' + escapeHtml(lead.device) + '</td>' +
       '<td>' + followupHtml + '</td>' +
       '<td>' + escapeHtml(lead.interest) + '</td>' +
       '<td class="notes-cell">' + escapeHtml(lead.notes) + '</td>' +
