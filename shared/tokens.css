@@ -1,0 +1,22 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text-2: #475569;
+  --text-3: #94A3B8;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --demo-bar-bg: #0F172A;
+  --demo-bar-link: #93C5FD;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 0; transform: translateY(8px); }
+  15% { opacity: 1; transform: translateY(0); }
+  75% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-4px); }
+}

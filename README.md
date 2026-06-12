@@ -23,14 +23,23 @@ Plain HTML + CSS + vanilla JS. No build step, no framework, no dependencies.
 
 ```
 lr-portal-prototype/
-├── index.html          # Exhibitor portal (entry at /)
-├── admin.html          # Admin console (entry at /admin)
-├── vercel.json         # Clean URL config (cleanUrls: true)
+├── index.html              # Exhibitor portal (entry at /)
+├── admin.html              # Admin console (entry at /admin)
+├── shared/
+│   ├── tokens.css          # Design tokens + reset
+│   ├── components.css      # Demo bar, modals, toasts
+│   ├── mock-data.js        # Default catalog + exhibitor seed data
+│   ├── catalog.js          # Catalog load/save (localStorage)
+│   ├── ui.js               # Shared UI helpers
+│   ├── render.js           # Render catalog into HTML
+│   ├── exhibitor.js        # Exhibitor portal logic
+│   └── admin.js            # Admin console logic
+├── vercel.json
 ├── .gitignore
 └── README.md
 ```
 
-Each HTML file is fully self-contained — all CSS in `<style>`, all JS in `<script>` at the bottom. Easy to read, easy to edit.
+Each HTML file keeps page-specific layout CSS inline. Shared styles, product catalog data, and JS logic live in `shared/`. Admin catalog edits persist in `localStorage` and appear on the exhibitor portal after refresh.
 
 ---
 
@@ -102,7 +111,7 @@ Four sections in the sidebar:
 | Tab navigation | ✅ Wired |
 | Sidebar nav | ✅ Wired |
 | **Payment processing** | ❌ Mock — clicking "Confirm payment" just shows success screen |
-| **Data persistence** | ❌ Mock — refresh wipes any changes |
+| **Data persistence** | ⚠️ Catalog edits persist in localStorage; exhibitor/leads/billing data is still mock |
 | **Authentication** | ❌ None — no login |
 | **Backend / DB** | ❌ None — all data is hardcoded |
 | **CRM integration** | ❌ Mock — shown in lead delivery flow but no actual sync |
@@ -132,9 +141,10 @@ Estimated MVP: **2–3 weeks with 1–2 devs**.
 
 ## Editing conventions
 
-- All three HTML files are self-contained. Edit any of them directly — no rebuild needed, just refresh the browser.
-- CSS uses CSS custom properties at the top of each file's `<style>` block (`--accent`, `--text`, etc.) — easy to retheme.
-- Dummy data is inline in the HTML — search the file for company names like `Contoso` or `Fabrikam` to find/replace.
+- Edit page layout in `index.html` or `admin.html`; edit product catalog seed data in `shared/mock-data.js`.
+- CSS custom properties live in `shared/tokens.css` (shared) and each page's `<style>` block (page-specific).
+- Exhibitor list seed data is in `shared/mock-data.js` — search for company names like `Contoso` or `Fabrikam`.
+- To reset catalog edits: `localStorage.removeItem('lr-portal-catalog')` in the browser console.
 - Real app screenshots are loaded from Cloudinary URLs in the SVG `<image>` tags. If you want to self-host, drop PNGs in this folder and update the `href` attributes.
 
 ---

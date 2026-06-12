@@ -5,23 +5,21 @@
 <title>Admin Console · TechSummit 2026</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/components.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #F8FAFC;
     --surface: #FFFFFF;
     --sidebar: #0F172A;
     --sidebar-hover: #1E293B;
-    --border: #E2E8F0;
-    --text: #0F172A;
-    --text-2: #475569;
-    --text-3: #94A3B8;
     --accent: #6366F1;
     --accent-light: #EEF2FF;
-    --success: #10B981;
-    --warning: #F59E0B;
-    --danger: #EF4444;
+    --demo-toggle-active: #6366F1;
+  }
+
+  .demo-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
   }
 
   body {
@@ -32,24 +30,6 @@
     display: flex;
     min-height: 100vh;
   }
-
-  .demo-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    background: #0F172A;
-    color: white;
-    padding: 8px 24px;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
-  }
-  .demo-bar .label { opacity: 0.7; margin-right: 6px; }
-  .demo-bar a { color: #93C5FD; text-decoration: none; font-weight: 500; }
-  .demo-bar .toggle { display: flex; gap: 8px; align-items: center; }
-  .demo-bar .toggle a { padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.1); }
-  .demo-bar .toggle a.active { background: #6366F1; color: white; }
 
   .sidebar {
     width: 220px;
@@ -203,17 +183,6 @@
   }
   .actions button:hover { background: var(--bg); }
   .actions button.primary:hover { background: #4F46E5; }
-
-  /* Sections */
-  .view { display: none; }
-  .view.active { display: block; }
-
-  @keyframes fadeOut {
-    0% { opacity: 0; transform: translateY(8px); }
-    15% { opacity: 1; transform: translateY(0); }
-    75% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-4px); }
-  }
 
   /* Products section */
   .section-h {
@@ -678,7 +647,7 @@
   /* Integrations */
   .integration-grid {
     display: grid;
-    grid-template-columns: 240px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 14px;
     margin-top: 4px;
   }
@@ -686,51 +655,100 @@
     background: white;
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 18px 18px 16px;
+    padding: 20px 22px 18px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .integration-card:hover {
+    border-color: #635BFF;
+    box-shadow: 0 6px 20px rgba(99,91,255,0.10);
   }
   .integration-card .integration-head {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 12px;
+    margin-bottom: 12px;
   }
-  .stripe-logo {
-    width: 40px; height: 40px;
+  .integration-card .stripe-logo {
+    width: 44px; height: 44px;
     background: #635BFF;
-    color: white;
-    font-weight: 800;
-    font-size: 22px;
-    font-style: italic;
-    border-radius: 9px;
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-family: Georgia, serif;
+    flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(99,91,255,0.25);
   }
+  .integration-card .stripe-logo svg { display: block; }
+  .integration-card .integration-name-block { flex: 1; min-width: 0; }
   .integration-card .integration-name {
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: -0.3px;
+    color: var(--text);
   }
+  .integration-card .integration-cat {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .integration-card .integration-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-3);
+    padding: 4px 9px;
+    background: var(--bg);
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+  }
+  .integration-card .integration-status::before {
+    content: "○";
+    font-size: 10px;
+  }
+  .integration-card .integration-status.connected {
+    color: var(--success);
+    background: rgba(16,185,129,0.12);
+  }
+  .integration-card .integration-status.connected::before { content: "●"; }
   .integration-card .integration-desc {
     color: var(--text-2);
     font-size: 13px;
-    line-height: 1.45;
-    margin-bottom: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .integration-card .integration-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
   .integration-btn {
     background: #635BFF;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 9px 18px;
     border-radius: 999px;
     font-weight: 600;
-    font-size: 13.5px;
+    font-size: 13px;
     cursor: pointer;
     font-family: inherit;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    transition: background 0.15s;
   }
   .integration-btn:hover { background: #4F46E5; }
+  .integration-card .integration-learn {
+    color: var(--text-3);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+  .integration-card .integration-learn:hover { color: #635BFF; }
 
   /* Invite tabs */
   .invite-tabs {
@@ -983,105 +1001,6 @@
     color: white;
   }
 
-  /* Modal overlay */
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(15,23,42,0.55);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: white;
-    border-radius: 14px;
-    width: 100%;
-    max-width: 520px;
-    max-height: 86vh;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-  }
-  .modal .modal-head, .modal .modal-foot { flex-shrink: 0; }
-  .modal .modal-body { flex: 1; overflow-y: auto; }
-  .modal-head {
-    padding: 18px 22px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .modal-head h3 {
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-  }
-  .modal-head .close {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: var(--text-3);
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 4px;
-  }
-  .modal-head .close:hover { color: var(--text); }
-  .modal-body {
-    padding: 20px 22px;
-  }
-  .modal-row {
-    margin-bottom: 16px;
-  }
-  .modal-row label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-2);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-  .modal-row input[type="text"],
-  .modal-row input[type="number"],
-  .modal-row textarea,
-  .modal-row select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 13.5px;
-    font-family: inherit;
-    outline: none;
-  }
-  .modal-row input:focus, .modal-row textarea:focus, .modal-row select:focus { border-color: var(--accent); }
-  .modal-row .input-prefix {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .modal-row .input-prefix span {
-    padding: 10px 12px;
-    background: var(--bg);
-    color: var(--text-2);
-    font-weight: 600;
-    border-right: 1px solid var(--border);
-    font-size: 13.5px;
-  }
-  .modal-row .input-prefix input {
-    border: none;
-    flex: 1;
-    padding: 10px 12px;
-    font-size: 13.5px;
-    outline: none;
-    font-family: inherit;
-  }
-
   .bullet-input {
     display: flex;
     gap: 6px;
@@ -1120,32 +1039,6 @@
     font-weight: 600;
   }
   .add-bullet:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); border-style: solid; }
-
-  .modal-foot {
-    padding: 14px 22px 18px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-  }
-  .modal-foot button {
-    padding: 9px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: white;
-    color: var(--text);
-    font-family: inherit;
-  }
-  .modal-foot button.primary {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-  }
-  .modal-foot button:hover { background: var(--bg); }
-  .modal-foot button.primary:hover { background: #4F46E5; }
 
   /* Radio group */
   .radio-group {
@@ -1336,58 +1229,7 @@
         </div>
       </div>
 
-      <div class="packages-grid">
-        <div class="pkg-card">
-          <div class="name">Basic</div>
-          <div class="price-row">
-            <div class="price">$349</div>
-            <div class="per">/ event</div>
-          </div>
-          <div class="lic-count">2<span class="lbl">licenses</span></div>
-          <ul class="feat">
-            <li>Standard lead capture</li>
-            <li>CSV export</li>
-            <li>Email support</li>
-          </ul>
-          <div class="edit-row">
-            <a href="#" onclick="openEdit(this); return false;">Edit →</a>
-          </div>
-        </div>
-
-        <div class="pkg-card">
-          <div class="name">Pro</div>
-          <div class="price-row">
-            <div class="price">$699</div>
-            <div class="per">/ event</div>
-          </div>
-          <div class="lic-count">5<span class="lbl">licenses</span></div>
-          <ul class="feat">
-            <li>Custom qualifiers + dashboards</li>
-            <li>CRM integration (SF, HubSpot)</li>
-            <li>Priority support</li>
-          </ul>
-          <div class="edit-row">
-            <a href="#" onclick="openEdit(this); return false;">Edit →</a>
-          </div>
-        </div>
-
-        <div class="pkg-card">
-          <div class="name">Enterprise</div>
-          <div class="price-row">
-            <div class="price">$1,499</div>
-            <div class="per">/ event</div>
-          </div>
-          <div class="lic-count">20<span class="lbl">licenses</span></div>
-          <ul class="feat">
-            <li>AI lead enrichment</li>
-            <li>Templates, surveys, email campaigns</li>
-            <li>Dedicated CSM</li>
-          </ul>
-          <div class="edit-row">
-            <a href="#" onclick="openEdit(this); return false;">Edit →</a>
-          </div>
-        </div>
-      </div>
+      <div class="packages-grid" id="packagesGrid"></div>
 
       <div class="section-h">
         <div>
@@ -1395,68 +1237,7 @@
         </div>
       </div>
 
-      <div class="rental-cards">
-        <div class="rental-card-adm">
-          <div class="visual">
-            <div class="tag">Smartphone</div>
-            <div class="device">
-              <svg width="140" height="240" viewBox="0 0 140 280" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <clipPath id="iphone-clip">
-                    <rect x="5" y="6" width="130" height="268" rx="18" ry="18"/>
-                  </clipPath>
-                </defs>
-                <!-- Phone body -->
-                <rect x="0" y="0" width="140" height="280" rx="22" ry="22" fill="#1a1a1a"/>
-                <!-- Screen image (app home) -->
-                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128785/app_home_krcr2l.png"
-                       x="5" y="6" width="130" height="268"
-                       preserveAspectRatio="xMidYMid slice"
-                       clip-path="url(#iphone-clip)"/>
-                <!-- Dynamic island overlay -->
-                <rect x="50" y="14" width="40" height="9" rx="4.5" fill="#000"/>
-                <!-- Home indicator overlay -->
-                <rect x="50" y="265" width="40" height="3" rx="1.5" fill="#000" opacity="0.65"/>
-              </svg>
-            </div>
-          </div>
-          <div class="body">
-            <div class="name">iPhone Rental</div>
-            <div class="desc">iPhone 13 pre-installed with scanning software. Picked up at registration.</div>
-            <div class="amt">$120<span class="per">/ device</span></div>
-            <a class="edit-link" href="#" onclick="openEdit(this); return false;">Edit product</a>
-          </div>
-        </div>
-        <div class="rental-card-adm">
-          <div class="visual">
-            <div class="tag">Tablet</div>
-            <div class="device">
-              <svg width="200" height="240" viewBox="0 0 240 290" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <clipPath id="ipad-clip">
-                    <rect x="10" y="12" width="220" height="266" rx="6" ry="6"/>
-                  </clipPath>
-                </defs>
-                <!-- iPad body -->
-                <rect x="0" y="0" width="240" height="290" rx="18" ry="18" fill="#1a1a1a"/>
-                <!-- Screen image (app welcome) -->
-                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128589/app_welcome_ez5yxd.png"
-                       x="10" y="12" width="220" height="266"
-                       preserveAspectRatio="xMidYMid slice"
-                       clip-path="url(#ipad-clip)"/>
-                <!-- Front camera dot -->
-                <circle cx="120" cy="6" r="2" fill="#444"/>
-              </svg>
-            </div>
-          </div>
-          <div class="body">
-            <div class="name">iPad Rental</div>
-            <div class="desc">iPad with scanning software. Ideal for larger booths and stationary check-in.</div>
-            <div class="amt">$150<span class="per">/ device</span></div>
-            <a class="edit-link" href="#" onclick="openEdit(this); return false;">Edit product</a>
-          </div>
-        </div>
-      </div>
+      <div class="rental-cards" id="rentalCards"></div>
 
       <div class="section-h">
         <div>
@@ -1474,50 +1255,7 @@
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td><div class="name-cell"><div class="icon-box">✨</div><div><b>AI Lead Enrichment - 100 records</b><div class="d">Auto-enrich up to 100 captured leads with firmographics, intent signals, recommended next action, and CRM-ready contact details.</div></div></div></td>
-              <td>Feature</td>
-              <td class="price">$249</td>
-              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-            </tr>
-            <tr>
-              <td><div class="name-cell"><div class="icon-box">✨</div><div><b>Basic AI Enrichment - 100 records</b><div class="d">Auto-enrich up to 100 captured leads with firmographic data (company size, industry, location, headcount).</div></div></div></td>
-              <td>Feature</td>
-              <td class="price">$95</td>
-              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-            </tr>
-            <tr>
-              <td><div class="name-cell"><div class="icon-box">📋</div><div><b>Custom Questionnaires</b><div class="d">Build your own lead qualifier flow with branching logic, required-field validation, and multi-language support. Built in our self-service form designer.</div></div></div></td>
-              <td>Feature</td>
-              <td class="price">$99</td>
-              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-            </tr>
-            <tr>
-              <td><div class="name-cell"><div class="icon-box">📧</div><div><b>Email campaign</b><div class="d">Send branded pre-show invitations or post-event follow-ups, auto-personalized for each lead and scheduled to your timeline.</div></div></div></td>
-              <td>Feature</td>
-              <td class="price">$149</td>
-              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-            </tr>
-            <tr>
-              <td><div class="name-cell"><div class="icon-box">🔌</div><div><b>CRM Integration</b><div class="d">Auto-sync captured leads in real time to Salesforce, HubSpot, or any major CRM. Includes field mapping, dedup rules, and live status during the event.</div></div></div></td>
-              <td>Feature</td>
-              <td class="price">$199</td>
-              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-            </tr>
-            <tr>
-              <td><div class="name-cell"><div class="icon-box">🔧</div><div><b>API Developer Access</b><div class="d">Full read/write API access for custom integrations. Includes documentation, sandbox environment, and authentication keys for your engineering team.</div></div></div></td>
-              <td>Service</td>
-              <td class="price">$450</td>
-              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-            </tr>
-            <tr>
-              <td><div class="name-cell"><div class="icon-box">➕</div><div><b>Additional Profile Questions (5)</b><div class="d">Add 5 extra qualifier questions beyond the 5 included in your package. Useful for capturing budget, timeline, decision-maker role, and product interest.</div></div></div></td>
-              <td>Feature</td>
-              <td class="price">$45 / block</td>
-              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-            </tr>
-          </tbody>
+          <tbody id="addonTableBody"></tbody>
         </table>
       </div>
     </div>
@@ -1574,143 +1312,7 @@
               <th>Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr onclick="openExhibitor(this)" data-name="Contoso Inc." data-booth="B-247" data-hall="West Hall" data-contact="Sarah Chen" data-role="VP Marketing" data-email="sarah.chen@contoso.com" data-phone="+1 (415) 555-0102" data-website="contoso.com" data-industry="SaaS / Cloud Infrastructure" data-size="500-1,000 employees" data-location="San Jose, CA" data-package="Pro" data-addons="iPhone rental ×3" data-total="$879" data-status="paid">
-              <td class="company"><b>Contoso Inc.</b></td>
-              <td><b>B-247</b><div style="color:var(--text-3);font-size:11px;">West Hall</div></td>
-              <td><b>sarah.chen@contoso.com</b><div style="color:var(--text-3);font-size:11.5px;">Sarah Chen · VP Marketing</div></td>
-              <td><span class="pill pro">Pro</span></td>
-              <td class="addons">iPhone rental ×3</td>
-              <td class="total">$879</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Acme Corp." data-booth="B-312" data-hall="West Hall" data-contact="James Peterson" data-role="CMO" data-email="j.peterson@acme.com" data-phone="+1 (212) 555-0143" data-website="acme.com" data-industry="Industrial Manufacturing" data-size="1,000-5,000 employees" data-location="New York, NY" data-package="Enterprise" data-addons="AI enrichment, email campaign" data-total="$1,897" data-status="pending">
-              <td class="company"><b>Acme Corp.</b></td>
-              <td><b>B-312</b><div style="color:var(--text-3);font-size:11px;">West Hall</div></td>
-              <td><b>j.peterson@acme.com</b><div style="color:var(--text-3);font-size:11.5px;">James Peterson · CMO</div></td>
-              <td><span class="pill ent">Enterprise</span></td>
-              <td class="addons">AI enrichment, email campaign</td>
-              <td class="total">$1,897</td>
-              <td><span class="status pending">Pending</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Initech" data-booth="C-104" data-hall="East Hall" data-contact="Mike Bolton" data-role="Sales" data-email="mike@initech.com" data-phone="+1 (404) 555-0188" data-website="initech.com" data-industry="Software" data-size="50-200 employees" data-location="Atlanta, GA" data-package="Basic" data-addons="—" data-total="$349" data-status="paid">
-              <td class="company"><b>Initech</b></td>
-              <td><b>C-104</b><div style="color:var(--text-3);font-size:11px;">East Hall</div></td>
-              <td><b>mike@initech.com</b><div style="color:var(--text-3);font-size:11.5px;">Mike Bolton · Sales</div></td>
-              <td><span class="pill basic">Basic</span></td>
-              <td class="addons">—</td>
-              <td class="total">$349</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Vandelay Industries" data-booth="A-501" data-hall="Main Hall" data-contact="Art Vandelay" data-role="Founder" data-email="art@vandelay.com" data-phone="+1 (212) 555-0277" data-website="vandelay.com" data-industry="Import / Export" data-size="200-500 employees" data-location="New York, NY" data-package="Enterprise" data-addons="AI enrichment, surveys, iPad ×2" data-total="$1,748" data-status="paid">
-              <td class="company"><b>Vandelay Industries</b></td>
-              <td><b>A-501</b><div style="color:var(--text-3);font-size:11px;">Main Hall</div></td>
-              <td><b>art@vandelay.com</b><div style="color:var(--text-3);font-size:11.5px;">Art Vandelay · Founder</div></td>
-              <td><span class="pill ent">Enterprise</span></td>
-              <td class="addons">AI enrichment, surveys, iPad ×2</td>
-              <td class="total">$1,748</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Soylent Inc." data-booth="B-088" data-hall="West Hall" data-contact="Pat Green" data-role="Director" data-email="green@soylent.com" data-phone="+1 (415) 555-0319" data-website="soylent.com" data-industry="Consumer Products" data-size="50-200 employees" data-location="San Francisco, CA" data-package="—" data-addons="—" data-total="—" data-status="not-accepted">
-              <td class="company"><b>Soylent Inc.</b></td>
-              <td><b>B-088</b><div style="color:var(--text-3);font-size:11px;">West Hall</div></td>
-              <td><b>green@soylent.com</b><div style="color:var(--text-3);font-size:11.5px;">Pat Green · Director</div></td>
-              <td>—</td>
-              <td class="addons">—</td>
-              <td class="total" style="color:var(--text-3);">—</td>
-              <td><span class="status not-accepted">Not accepted invitation</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Globex Ltd." data-booth="C-220" data-hall="East Hall" data-contact="Hank Scott" data-role="Operations" data-email="h.scott@globex.com" data-phone="+1 (617) 555-0411" data-website="globex.com" data-industry="Technology Services" data-size="500-1,000 employees" data-location="Boston, MA" data-package="—" data-addons="—" data-total="—" data-status="not-accepted">
-              <td class="company"><b>Globex Ltd.</b></td>
-              <td><b>C-220</b><div style="color:var(--text-3);font-size:11px;">East Hall</div></td>
-              <td><b>h.scott@globex.com</b><div style="color:var(--text-3);font-size:11.5px;">Hank Scott · Operations</div></td>
-              <td>—</td>
-              <td class="addons">—</td>
-              <td class="total" style="color:var(--text-3);">—</td>
-              <td><span class="status not-accepted">Not accepted invitation</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Fabrikam Industries" data-booth="D-410" data-hall="Main Hall" data-contact="Robert Carter" data-role="Director, Platform Eng." data-email="r.carter@fabrikam.com" data-phone="+1 (512) 555-0163" data-website="fabrikam.com" data-industry="Industrial / IoT" data-size="1,000-5,000 employees" data-location="Austin, TX" data-package="Pro" data-addons="Questionnaires, email campaign" data-total="$947" data-status="paid">
-              <td class="company"><b>Fabrikam Industries</b></td>
-              <td><b>D-410</b><div style="color:var(--text-3);font-size:11px;">Main Hall</div></td>
-              <td><b>r.carter@fabrikam.com</b><div style="color:var(--text-3);font-size:11.5px;">Robert Carter · Director, Platform Eng.</div></td>
-              <td><span class="pill pro">Pro</span></td>
-              <td class="addons">Questionnaires, email campaign</td>
-              <td class="total">$947</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Northwind Traders" data-booth="D-415" data-hall="Main Hall" data-contact="Diana Voss" data-role="Marketing Manager" data-email="d.voss@northwind.com" data-phone="+1 (303) 555-0227" data-website="northwind.com" data-industry="Logistics" data-size="200-500 employees" data-location="Denver, CO" data-package="Basic" data-addons="iPhone rental ×2" data-total="$589" data-status="paid">
-              <td class="company"><b>Northwind Traders</b></td>
-              <td><b>D-415</b><div style="color:var(--text-3);font-size:11px;">Main Hall</div></td>
-              <td><b>d.voss@northwind.com</b><div style="color:var(--text-3);font-size:11.5px;">Diana Voss · Marketing Manager</div></td>
-              <td><span class="pill basic">Basic</span></td>
-              <td class="addons">iPhone rental ×2</td>
-              <td class="total">$589</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Litware Inc." data-booth="D-420" data-hall="Main Hall" data-contact="Joanne Park" data-role="CEO" data-email="j.park@litware.com" data-phone="+1 (305) 555-0344" data-website="litware.com" data-industry="Telecommunications" data-size="50-200 employees" data-location="Miami, FL" data-package="Pro" data-addons="CRM integration" data-total="$898" data-status="paid">
-              <td class="company"><b>Litware Inc.</b></td>
-              <td><b>D-420</b><div style="color:var(--text-3);font-size:11px;">Main Hall</div></td>
-              <td><b>j.park@litware.com</b><div style="color:var(--text-3);font-size:11.5px;">Joanne Park · CEO</div></td>
-              <td><span class="pill pro">Pro</span></td>
-              <td class="addons">CRM integration</td>
-              <td class="total">$898</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Adatum Corporation" data-booth="B-156" data-hall="West Hall" data-contact="—" data-role="—" data-email="info@adatum.com" data-phone="—" data-website="adatum.com" data-industry="Financial Services" data-size="500-1,000 employees" data-location="Chicago, IL" data-package="Basic" data-addons="—" data-total="$349" data-status="paid">
-              <td class="company"><b>Adatum Corporation</b></td>
-              <td><b>B-156</b><div style="color:var(--text-3);font-size:11px;">West Hall</div></td>
-              <td><b>info@adatum.com</b><div style="color:var(--text-3);font-size:11.5px;">—</div></td>
-              <td><span class="pill basic">Basic</span></td>
-              <td class="addons">—</td>
-              <td class="total">$349</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Adventure Works" data-booth="C-305" data-hall="East Hall" data-contact="Michael Reed" data-role="Founder" data-email="mike@adventureworks.com" data-phone="+1 (602) 555-0488" data-website="adventureworks.com" data-industry="Sporting Goods" data-size="50-200 employees" data-location="Phoenix, AZ" data-package="Pro" data-addons="iPad rental ×1" data-total="$849" data-status="paid">
-              <td class="company"><b>Adventure Works</b></td>
-              <td><b>C-305</b><div style="color:var(--text-3);font-size:11px;">East Hall</div></td>
-              <td><b>mike@adventureworks.com</b><div style="color:var(--text-3);font-size:11.5px;">Michael Reed · Founder</div></td>
-              <td><span class="pill pro">Pro</span></td>
-              <td class="addons">iPad rental ×1</td>
-              <td class="total">$849</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Trey Research" data-booth="A-203" data-hall="Main Hall" data-contact="David Cohen" data-role="Procurement Lead" data-email="d.cohen@treyresearch.com" data-phone="+1 (206) 555-0521" data-website="treyresearch.com" data-industry="Market Research" data-size="200-500 employees" data-location="Seattle, WA" data-package="Pro" data-addons="—" data-total="$699" data-status="paid">
-              <td class="company"><b>Trey Research</b></td>
-              <td><b>A-203</b><div style="color:var(--text-3);font-size:11px;">Main Hall</div></td>
-              <td><b>d.cohen@treyresearch.com</b><div style="color:var(--text-3);font-size:11.5px;">David Cohen · Procurement Lead</div></td>
-              <td><span class="pill pro">Pro</span></td>
-              <td class="addons">—</td>
-              <td class="total">$699</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Coho Vineyard" data-booth="B-340" data-hall="West Hall" data-contact="Linda Park" data-role="Director, Operations" data-email="l.park@cohovineyard.com" data-phone="+1 (312) 555-0613" data-website="cohovineyard.com" data-industry="Food & Beverage" data-size="50-200 employees" data-location="Chicago, IL" data-package="Basic" data-addons="—" data-total="$349" data-status="paid">
-              <td class="company"><b>Coho Vineyard</b></td>
-              <td><b>B-340</b><div style="color:var(--text-3);font-size:11px;">West Hall</div></td>
-              <td><b>l.park@cohovineyard.com</b><div style="color:var(--text-3);font-size:11.5px;">Linda Park · Director, Operations</div></td>
-              <td><span class="pill basic">Basic</span></td>
-              <td class="addons">—</td>
-              <td class="total">$349</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Wingtip Solutions" data-booth="A-118" data-hall="Main Hall" data-contact="Sarah Hayes" data-role="VP, Procurement" data-email="s.hayes@wingtip.com" data-phone="+1 (617) 555-0729" data-website="wingtip.com" data-industry="Consulting" data-size="500-1,000 employees" data-location="Boston, MA" data-package="Pro" data-addons="iPhone rental ×2" data-total="$939" data-status="paid">
-              <td class="company"><b>Wingtip Solutions</b></td>
-              <td><b>A-118</b><div style="color:var(--text-3);font-size:11px;">Main Hall</div></td>
-              <td><b>s.hayes@wingtip.com</b><div style="color:var(--text-3);font-size:11.5px;">Sarah Hayes · VP, Procurement</div></td>
-              <td><span class="pill pro">Pro</span></td>
-              <td class="addons">iPhone rental ×2</td>
-              <td class="total">$939</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-            <tr onclick="openExhibitor(this)" data-name="Proseware Inc." data-booth="D-510" data-hall="East Hall" data-contact="Raj Patel" data-role="Senior Engineer" data-email="r.patel@proseware.com" data-phone="+1 (404) 555-0835" data-website="proseware.com" data-industry="Enterprise Software" data-size="1,000-5,000 employees" data-location="Atlanta, GA" data-package="Enterprise" data-addons="AI enrichment" data-total="$1,499" data-status="paid">
-              <td class="company"><b>Proseware Inc.</b></td>
-              <td><b>D-510</b><div style="color:var(--text-3);font-size:11px;">East Hall</div></td>
-              <td><b>r.patel@proseware.com</b><div style="color:var(--text-3);font-size:11.5px;">Raj Patel · Senior Engineer</div></td>
-              <td><span class="pill ent">Enterprise</span></td>
-              <td class="addons">AI enrichment</td>
-              <td class="total">$1,499</td>
-              <td><span class="status paid">Paid</span></td>
-            </tr>
-          </tbody>
+          <tbody id="exhibitorTableBody"></tbody>
         </table>
         <div class="table-footer">
           <div id="exhibitorCount">Showing all 15 exhibitors</div>
@@ -1803,11 +1405,22 @@
         <div class="integration-grid">
           <div class="integration-card">
             <div class="integration-head">
-              <div class="stripe-logo">S</div>
-              <div class="integration-name">Stripe</div>
+              <div class="stripe-logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Stripe">
+                  <path fill="white" fill-rule="evenodd" clip-rule="evenodd" d="M13.5 9.55c-1.4-.5-2.2-.85-2.2-1.6 0-.65.65-.95 1.7-.95 1.45 0 3.05.55 4.1 1.05V4.15c-1.1-.45-2.55-.75-4.1-.75-3.3 0-5.5 1.75-5.5 4.5 0 4.35 6.05 3.65 6.05 5.5 0 .85-.8 1.15-2 1.15-1.6 0-3.65-.65-4.85-1.5v3.8c1.3.6 2.85.95 4.5.95 3.4 0 5.7-1.5 5.7-4.3 0-4.7-6.05-3.95-6.05-5.95z"/>
+                </svg>
+              </div>
+              <div class="integration-name-block">
+                <div class="integration-name">Stripe</div>
+                <div class="integration-cat">Payments · Recommended</div>
+              </div>
+              <div class="integration-status">Not connected</div>
             </div>
-            <p class="integration-desc">Online payment infrastructure for collecting exhibitor purchases, processing refunds, and routing revenue splits.</p>
-            <button class="integration-btn">🔗 Connect</button>
+            <p class="integration-desc">Online payment infrastructure for collecting exhibitor purchases, processing refunds, and routing organizer revenue splits automatically.</p>
+            <div class="integration-foot">
+              <button class="integration-btn">🔗 Connect Stripe</button>
+              <a href="https://stripe.com" target="_blank" class="integration-learn">Learn more →</a>
+            </div>
           </div>
         </div>
       </div>
@@ -2103,409 +1716,13 @@
     </div>
   </div>
 
+  <script src="shared/mock-data.js"></script>
+  <script src="shared/catalog.js"></script>
+  <script src="shared/ui.js"></script>
+  <script src="shared/render.js"></script>
+  <script src="shared/admin.js"></script>
   <script>
-    function showView(view, el) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById('view-' + view).classList.add('active');
-      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
-      el.classList.add('active');
-    }
-
-    let currentEditCard = null;
-
-    function openEdit(linkEl) {
-      const card = linkEl.closest('.pkg-card, .rental-card-adm, tr');
-      currentEditCard = card;
-
-      let name = '', price = '', licenses = null, bullets = [];
-
-      if (card.classList.contains('pkg-card')) {
-        name = card.querySelector('.name').textContent.trim();
-        price = card.querySelector('.price').textContent.replace(/[^0-9.]/g, '');
-        const licDiv = card.querySelector('.lic-count');
-        if (licDiv && licDiv.firstChild) {
-          licenses = licDiv.firstChild.textContent.trim();
-        }
-        bullets = Array.from(card.querySelectorAll('.feat li')).map(li => li.textContent.trim());
-      } else if (card.classList.contains('rental-card-adm')) {
-        name = card.querySelector('.body .name').textContent.trim();
-        const amt = card.querySelector('.amt');
-        if (amt && amt.firstChild) {
-          price = amt.firstChild.textContent.replace(/[^0-9.]/g, '');
-        }
-        const desc = card.querySelector('.body .desc');
-        if (desc) bullets = [desc.textContent.trim()];
-      } else if (card.tagName === 'TR') {
-        name = card.querySelector('.name-cell b').textContent.trim();
-        const priceCell = card.querySelector('.price');
-        if (priceCell) price = priceCell.textContent.replace(/[^0-9.]/g, '');
-        const desc = card.querySelector('.name-cell .d');
-        if (desc) bullets = [desc.textContent.trim()];
-      }
-
-      document.getElementById('editTitle').textContent = 'Edit ' + name;
-      document.getElementById('editName').value = name;
-      document.getElementById('editPrice').value = price;
-
-      const licInput = document.getElementById('editLicenses');
-      const licRow = document.getElementById('editLicensesRow');
-      if (licenses === null) {
-        licRow.style.display = 'none';
-      } else {
-        licRow.style.display = 'block';
-        licInput.value = licenses;
-      }
-
-      renderBullets(bullets);
-      document.getElementById('editModal').classList.add('open');
-    }
-
-    function saveEdit() {
-      if (!currentEditCard) return closeModal('editModal');
-
-      const newName = document.getElementById('editName').value.trim();
-      const newPrice = document.getElementById('editPrice').value.trim();
-      const newLicenses = document.getElementById('editLicenses').value.trim();
-      const bullets = Array.from(document.querySelectorAll('#editBullets .bullet-input input'))
-        .map(i => i.value.trim())
-        .filter(b => b);
-
-      const card = currentEditCard;
-
-      if (card.classList.contains('pkg-card')) {
-        card.querySelector('.name').textContent = newName;
-        card.querySelector('.price').textContent = '$' + newPrice;
-        const licDiv = card.querySelector('.lic-count');
-        if (licDiv && newLicenses) {
-          licDiv.innerHTML = newLicenses + '<span class="lbl">licenses</span>';
-        }
-        const ul = card.querySelector('.feat');
-        ul.innerHTML = '';
-        bullets.forEach(b => {
-          const li = document.createElement('li');
-          li.textContent = b;
-          ul.appendChild(li);
-        });
-      } else if (card.classList.contains('rental-card-adm')) {
-        card.querySelector('.body .name').textContent = newName;
-        const amt = card.querySelector('.amt');
-        if (amt && amt.firstChild) {
-          amt.firstChild.nodeValue = '$' + newPrice;
-        }
-        if (bullets[0]) {
-          const desc = card.querySelector('.body .desc');
-          if (desc) desc.textContent = bullets[0];
-        }
-      } else if (card.tagName === 'TR') {
-        card.querySelector('.name-cell b').textContent = newName;
-        const priceCell = card.querySelector('.price');
-        if (priceCell) {
-          const currentText = priceCell.textContent;
-          const suffix = currentText.replace(/^\$[\d.,]+\s*/, '');
-          priceCell.textContent = '$' + newPrice + (suffix ? ' ' + suffix : '');
-        }
-        if (bullets[0]) {
-          const desc = card.querySelector('.name-cell .d');
-          if (desc) desc.textContent = bullets[0];
-        }
-      }
-
-      closeModal('editModal');
-      currentEditCard = null;
-
-      // brief success indicator
-      const flash = document.createElement('div');
-      flash.textContent = '✓ Saved';
-      flash.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#10B981;color:white;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;font-family:Inter,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:2000;animation:fadeOut 2s forwards;';
-      document.body.appendChild(flash);
-      setTimeout(() => flash.remove(), 2000);
-    }
-
-    function renderBullets(bullets) {
-      const container = document.getElementById('editBullets');
-      container.innerHTML = '';
-      bullets.forEach(b => container.appendChild(makeBulletRow(b)));
-    }
-
-    function makeBulletRow(value) {
-      const row = document.createElement('div');
-      row.className = 'bullet-input';
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = value;
-      const rm = document.createElement('button');
-      rm.className = 'rm';
-      rm.textContent = '×';
-      rm.onclick = function() { row.remove(); };
-      row.appendChild(input);
-      row.appendChild(rm);
-      return row;
-    }
-
-    function addBullet() {
-      document.getElementById('editBullets').appendChild(makeBulletRow(''));
-    }
-
-    let currentAddType = 'package';
-    let currentAddDisplay = 'card';
-
-    function openAdd() {
-      // reset radio selections
-      document.querySelectorAll('#addModal .radio-opt').forEach(o => o.classList.remove('checked'));
-      document.querySelectorAll('#addModal .radio-group').forEach(g => {
-        const first = g.querySelector('.radio-opt');
-        if (first) first.classList.add('checked');
-      });
-      // reset state to defaults
-      currentAddType = 'package';
-      currentAddDisplay = 'card';
-      // reset fields
-      ['addName','addPrice','addLicenses','addDesc'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-      document.getElementById('addLicensesRow').style.display = 'block';
-      document.getElementById('addModal').classList.add('open');
-    }
-
-    function pickType(el, type) {
-      currentAddType = type;
-      const group = el.parentNode;
-      group.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('checked'));
-      el.classList.add('checked');
-      // licenses field only relevant for package/rental
-      const licRow = document.getElementById('addLicensesRow');
-      licRow.style.display = (type === 'addon') ? 'none' : 'block';
-    }
-
-    function pickDisplay(el, mode) {
-      currentAddDisplay = mode;
-      const group = el.parentNode;
-      group.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('checked'));
-      el.classList.add('checked');
-    }
-
-    function saveAdd() {
-      const name = (document.getElementById('addName').value || 'Untitled').trim();
-      const price = (document.getElementById('addPrice').value || '0').trim();
-      const licenses = (document.getElementById('addLicenses').value || '').trim();
-      const desc = (document.getElementById('addDesc').value || '').trim();
-
-      const typeLabels = { package: 'Package', rental: 'Rental', addon: 'Feature' };
-      const typeIcons  = { package: '📦', rental: '📱', addon: '✨' };
-      const priceSuffix = currentAddType === 'rental' ? ' / device' : '';
-
-      // INLINE display — always goes to the add-ons table regardless of type
-      if (currentAddDisplay === 'inline') {
-        const tbody = document.querySelector('.addon-table tbody');
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><div class="name-cell"><div class="icon-box">${typeIcons[currentAddType]}</div><div><b>${escapeHtml(name)}</b><div class="d">${escapeHtml(desc || 'New product')}</div></div></div></td>
-          <td>${typeLabels[currentAddType]}</td>
-          <td class="price">$${escapeHtml(price)}${priceSuffix}</td>
-          <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-        `;
-        tbody.appendChild(row);
-      } else {
-        // CARD display — depends on type
-        if (currentAddType === 'package') {
-          const grid = document.querySelector('.packages-grid');
-          const card = document.createElement('div');
-          card.className = 'pkg-card';
-          card.innerHTML = `
-            <div class="name">${escapeHtml(name)}</div>
-            <div class="price-row">
-              <div class="price">$${escapeHtml(price)}</div>
-              <div class="per">/ event</div>
-            </div>
-            <div class="lic-count">${escapeHtml(licenses || '1')}<span class="lbl">licenses</span></div>
-            <ul class="feat">
-              ${desc ? '<li>' + escapeHtml(desc) + '</li>' : ''}
-            </ul>
-            <div class="edit-row">
-              <a href="#" onclick="openEdit(this); return false;">Edit →</a>
-            </div>
-          `;
-          grid.appendChild(card);
-        } else if (currentAddType === 'rental') {
-          const grid = document.querySelector('.rental-cards');
-          const card = document.createElement('div');
-          card.className = 'rental-card-adm';
-          card.innerHTML = `
-            <div class="visual">
-              <div class="tag">Hardware</div>
-              <div class="device" style="font-size:90px;">📦</div>
-            </div>
-            <div class="body">
-              <div class="name">${escapeHtml(name)}</div>
-              <div class="desc">${escapeHtml(desc || 'New rental item.')}</div>
-              <div class="amt">$${escapeHtml(price)}<span class="per">/ device</span></div>
-              <a class="edit-link" href="#" onclick="openEdit(this); return false;">Edit product</a>
-            </div>
-          `;
-          grid.appendChild(card);
-        } else if (currentAddType === 'addon') {
-          // Add-on + Card — fall back to inline since there's no add-on cards section yet
-          const tbody = document.querySelector('.addon-table tbody');
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><div class="name-cell"><div class="icon-box">✨</div><div><b>${escapeHtml(name)}</b><div class="d">${escapeHtml(desc || 'New add-on')}</div></div></div></td>
-            <td>Feature</td>
-            <td class="price">$${escapeHtml(price)}</td>
-            <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
-          `;
-          tbody.appendChild(row);
-        }
-      }
-
-      closeModal('addModal');
-
-      // success toast
-      const flash = document.createElement('div');
-      flash.textContent = '✓ Product added';
-      flash.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#10B981;color:white;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;font-family:Inter,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:2000;animation:fadeOut 2s forwards;';
-      document.body.appendChild(flash);
-      setTimeout(() => flash.remove(), 2000);
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    }
-
-    // ====== INVITE EXHIBITOR ======
-    function openInvite() {
-      document.getElementById('inviteEmail').value = '';
-      document.getElementById('inviteCompany').value = '';
-      document.getElementById('inviteMessage').value = '';
-      document.getElementById('inviteModal').classList.add('open');
-    }
-    function switchInviteTab(btn, tab) {
-      document.querySelectorAll('.invite-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('invite-email').style.display = (tab === 'email') ? 'block' : 'none';
-      document.getElementById('invite-import').style.display = (tab === 'import') ? 'block' : 'none';
-    }
-    function sendInvite() {
-      const email = document.getElementById('inviteEmail').value.trim();
-      if (!email) { alert('Please enter an email address'); return; }
-      closeModal('inviteModal');
-      // toast
-      const flash = document.createElement('div');
-      flash.textContent = '✓ Invitation sent to ' + email;
-      flash.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#10B981;color:white;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;font-family:Inter,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:2000;animation:fadeOut 3s forwards;';
-      document.body.appendChild(flash);
-      setTimeout(() => flash.remove(), 3000);
-    }
-
-    // ====== EXHIBITOR DETAIL ======
-    function openExhibitor(row) {
-      const d = row.dataset;
-      document.getElementById('exDetailName').textContent = d.name;
-      document.getElementById('exDetailCompany').textContent = d.name;
-      document.getElementById('exDetailMeta').textContent = d.industry + ' · ' + d.location;
-      document.getElementById('exDetailLogo').textContent = d.name.charAt(0);
-
-      document.getElementById('exDetailContactName').textContent = d.contact || '—';
-      document.getElementById('exDetailRole').textContent = d.role || '—';
-      document.getElementById('exDetailEmail').textContent = d.email || '—';
-      document.getElementById('exDetailPhone').textContent = d.phone || '—';
-
-      document.getElementById('exDetailWebsite').textContent = d.website || '—';
-      document.getElementById('exDetailIndustry').textContent = d.industry || '—';
-      document.getElementById('exDetailSize').textContent = d.size || '—';
-      document.getElementById('exDetailLocation').textContent = d.location || '—';
-
-      document.getElementById('exDetailBooth').textContent = '#' + d.booth + ' · ' + d.hall;
-      document.getElementById('exDetailPackage').textContent = d.package || '—';
-      document.getElementById('exDetailAddons').textContent = d.addons || '—';
-      document.getElementById('exDetailTotal').textContent = d.total || '—';
-
-      // Status pill
-      const statusLabels = { paid: '● Paid', pending: '● Pending', 'not-accepted': '○ Not accepted invitation' };
-      const statusColors = { paid: '#10B981', pending: '#F59E0B', 'not-accepted': '#94A3B8' };
-      const statusWrap = document.getElementById('exDetailStatusWrap');
-      statusWrap.innerHTML = '<span style="display:inline-block;padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:700;background:' + statusColors[d.status] + '22;color:' + statusColors[d.status] + ';">' + statusLabels[d.status] + '</span>';
-
-      // Action buttons
-      const contactBtn = document.getElementById('exDetailContactBtn');
-      const resendBtn = document.getElementById('exDetailResendBtn');
-      contactBtn.onclick = () => { window.location.href = 'mailto:' + d.email; };
-      contactBtn.textContent = '📧 Contact ' + d.contact.split(' ')[0];
-
-      if (d.status === 'not-accepted') {
-        resendBtn.style.display = 'inline-flex';
-        resendBtn.onclick = () => {
-          const flash = document.createElement('div');
-          flash.textContent = '✓ Invitation re-sent to ' + d.email;
-          flash.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#10B981;color:white;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;font-family:Inter,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:2000;animation:fadeOut 3s forwards;';
-          document.body.appendChild(flash);
-          setTimeout(() => flash.remove(), 3000);
-          closeModal('exhibitorDetailModal');
-        };
-      } else {
-        resendBtn.style.display = 'none';
-      }
-
-      document.getElementById('exhibitorDetailModal').classList.add('open');
-    }
-
-    // ====== EXHIBITOR SEARCH ======
-    function filterExhibitors() {
-      const q = document.getElementById('exhibitorSearch').value.toLowerCase().trim();
-      const rows = document.querySelectorAll('#exhibitorTable tbody tr');
-      let visible = 0;
-      rows.forEach(row => {
-        const text = (row.dataset.name + ' ' + row.dataset.booth + ' ' + (row.dataset.contact || '') + ' ' + (row.dataset.email || '') + ' ' + (row.dataset.hall || '')).toLowerCase();
-        const match = !q || text.includes(q);
-        row.style.display = match ? '' : 'none';
-        if (match) visible++;
-      });
-      document.getElementById('exhibitorCount').textContent =
-        q ? 'Showing ' + visible + ' of ' + rows.length + ' exhibitors' : 'Showing all ' + rows.length + ' exhibitors';
-    }
-
-    // Wire up addon row clicks
-    let lastDetailRow = null;
-    function openAddonDetail(row) {
-      lastDetailRow = row;
-      const name = row.querySelector('.name-cell b').textContent.trim();
-      const desc = row.querySelector('.name-cell .d').textContent.trim();
-      const icon = row.querySelector('.icon-box').textContent.trim();
-      const type = row.children[1].textContent.trim();
-      const price = row.querySelector('.price').textContent.trim();
-      document.getElementById('addonDetailName').textContent = name;
-      document.getElementById('addonDetailDesc').textContent = desc;
-      document.getElementById('addonDetailIcon').textContent = icon;
-      document.getElementById('addonDetailType').textContent = type;
-      document.getElementById('addonDetailPrice').textContent = price;
-      document.getElementById('addonDetailModal').classList.add('open');
-    }
-    function openEditFromDetail() {
-      if (lastDetailRow) {
-        const link = lastDetailRow.querySelector('.actions-cell a');
-        if (link) link.click();
-      }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.addon-table tbody tr').forEach(row => {
-        row.addEventListener('click', e => {
-          // Don't open detail if the Edit link itself was clicked
-          if (e.target.closest('.actions-cell a')) return;
-          openAddonDetail(row);
-        });
-      });
-    });
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('open');
-    }
-
-    // close modal on overlay click
-    document.querySelectorAll('.modal-overlay').forEach(o => {
-      o.addEventListener('click', e => {
-        if (e.target === o) o.classList.remove('open');
-      });
-    });
+    document.addEventListener('DOMContentLoaded', () => LR.admin.init());
   </script>
 </body>
 </html>
