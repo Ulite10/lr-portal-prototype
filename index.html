@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TechSummit 2026 - Lead Retrieval Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand: #0F766E;
+    --brand-dark: #115E59;
+    --brand-light: #5EEAD4;
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-2: #475569;
+    --text-3: #94A3B8;
+    --accent: #2563EB;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .demo-bar {
+    background: #0F172A;
+    color: white;
+    padding: 8px 24px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .demo-bar .label { opacity: 0.7; margin-right: 6px; }
+  .demo-bar a { color: #93C5FD; text-decoration: none; font-weight: 500; }
+  .demo-bar .toggle { display: flex; gap: 8px; align-items: center; }
+  .demo-bar .toggle a {
+    padding: 4px 10px; border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+  }
+  .demo-bar .toggle a.active {
+    background: #2563EB; color: white;
+  }
+
+  .header {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 800; font-size: 13px;
+  }
+  .logo-text { font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
+  .logo-text small { display: block; font-size: 11.5px; color: var(--text-3); font-weight: 500; margin-top: 1px; }
+  .header-meta { color: var(--text-2); font-size: 13px; text-align: right; }
+  .header-meta strong { color: var(--text); font-weight: 600; display: block; }
+  .header-meta .booth {
+    display: inline-block; background: var(--bg);
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 11.5px; margin-top: 3px;
+  }
+
+  /* Page title bar */
+  .page-title {
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-title-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 24px 0;
+  }
+  .page-title h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    margin-bottom: 6px;
+  }
+  .page-title p {
+    color: var(--text-2);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+  /* Tab nav */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: none;
+  }
+  .tabs a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tabs a:hover { color: var(--text); }
+  .tabs a.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+  }
+  .tabs a .num {
+    background: var(--bg);
+    color: var(--text-3);
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .tabs a.active .num { background: rgba(15,118,110,0.12); color: var(--brand); }
+
+  /* Main content */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Current package card */
+  .current-card {
+    background: linear-gradient(135deg, #0F766E, #115E59);
+    color: white;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 680px;
+  }
+  .current-card .lbl {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+  .current-card .pkg-name {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .current-card .meta {
+    font-size: 13px;
+    opacity: 0.85;
+  }
+  .current-card .price {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-align: right;
+  }
+  .current-card .price small {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 500;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .status-pill {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+    letter-spacing: 0.4px;
+  }
+  .status-pill.paid::before {
+    content: "✓ ";
+  }
+  .current-card .license-block {
+    text-align: center;
+    padding: 0 24px;
+    border-left: 1px solid rgba(255,255,255,0.2);
+    border-right: 1px solid rgba(255,255,255,0.2);
+  }
+  .current-card .license-num {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+  .current-card .license-lbl {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
+  /* Rentals - tall product cards matching admin */
+  .rentals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 18px;
+    margin-bottom: 28px;
+  }
+  .rental-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .rental-card:hover {
+    box-shadow: 0 12px 28px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
+  }
+  .rental-card .visual {
+    background: linear-gradient(160deg, #1E2754 0%, #2D3A8C 60%, #4F46E5 100%);
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .rental-card .visual::before {
+    content: "";
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+    top: -80px; right: -80px;
+  }
+  .rental-card .visual .device {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 16px 36px rgba(0,0,0,0.45));
+  }
+  .rental-card .visual .device svg { display: block; }
+  .rental-card .visual .tag {
+    position: absolute;
+    top: 16px; left: 16px;
+    background: rgba(255,255,255,0.95);
+    color: var(--brand);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .rental-card .body {
+    padding: 20px 22px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .rental-card .body .name {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+  .rental-card .body .desc {
+    color: var(--text-2);
+    font-size: 12.5px;
+    line-height: 1.45;
+    margin: 4px 0 14px;
+  }
+  .rental-card .body .amt {
+    color: var(--brand);
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .rental-card .body .amt .per {
+    color: var(--text-3);
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .rental-card .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px solid var(--brand);
+    border-radius: 8px;
+    padding: 4px;
+    background: white;
+    align-self: stretch;
+    justify-content: space-between;
+  }
+  .rental-card .qty-control button {
+    width: 30px; height: 30px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--brand);
+    border-radius: 6px;
+    font-family: inherit;
+  }
+  .rental-card .qty-control button:hover { background: var(--bg); }
+  .rental-card .qty-control .num,
+  .rental-card .qty-control input {
+    flex: 1;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14.5px;
+    border: none;
+    background: none;
+    outline: none;
+    font-family: inherit;
+    color: var(--text);
+  }
+  .rental-card .qty-control .qty-lbl {
+    font-size: 11px;
+    color: var(--text-3);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-right: 8px;
+  }
+
+  /* Section heading */
+  .sec-h {
+    margin: 0 0 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .sec-h h2 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .sec-h .h-sub {
+    color: var(--text-2);
+    font-size: 12.5px;
+    margin-top: 2px;
+  }
+
+  /* Upgrade packages */
+  .upgrade-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .pkg-opt {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .pkg-opt:hover { border-color: var(--brand); }
+  .pkg-opt.current {
+    border-color: var(--brand);
+    background: rgba(15,118,110,0.04);
+  }
+  .pkg-opt.current::after {
+    content: "Current";
+    position: absolute;
+    top: -8px; right: 14px;
+    background: var(--brand);
+    color: white;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.4px;
+  }
+  .pkg-opt .name {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 2px;
+  }
+  .pkg-opt .price {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--brand);
+    letter-spacing: -1px;
+    margin: 10px 0 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    line-height: 1;
+  }
+  .pkg-opt .price small {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0;
+  }
+  .pkg-opt .lic-count {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--brand);
+    letter-spacing: -1px;
+    margin-top: 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    line-height: 1;
+  }
+  .pkg-opt .lic-count .lbl {
+    font-size: 12px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  .pkg-opt ul {
+    list-style: none;
+    margin: 14px 0 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .pkg-opt ul li {
+    padding: 3px 0;
+    color: var(--text-3);
+    font-size: 12px;
+    display: flex;
+    gap: 6px;
+    line-height: 1.4;
+  }
+  .pkg-opt ul li::before {
+    content: "✓";
+    color: var(--success);
+    flex-shrink: 0;
+  }
+  .pkg-opt ul li b { color: var(--text); font-weight: 600; }
+  .pkg-opt .opt-btn {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--brand);
+    color: var(--brand);
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .pkg-opt .opt-btn:hover { background: var(--brand); color: white; }
+  .pkg-opt.current .opt-btn {
+    background: var(--bg);
+    border-color: var(--border);
+    color: var(--text-3);
+    cursor: not-allowed;
+  }
+  .pkg-opt.current .opt-btn:hover { background: var(--bg); color: var(--text-3); }
+
+  /* Add-ons form (Sapphire-style) */
+  .addons-form {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .addon-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 130px 150px 110px;
+    gap: 14px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .addon-row:last-child { border-bottom: none; }
+  .addon-row.head {
+    background: #FAFBFC;
+    padding: 10px 22px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .addon-row .ic {
+    width: 44px; height: 44px;
+    background: rgba(15,118,110,0.08);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .addon-row .info b { display: block; font-size: 14.5px; font-weight: 700; margin-bottom: 2px; }
+  .addon-row .info p { color: var(--text-2); font-size: 12.5px; line-height: 1.4; }
+  .addon-row .info .toggle-tag {
+    display: inline-block;
+    background: rgba(16,185,129,0.14);
+    color: var(--success);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-left: 6px;
+    letter-spacing: 0.3px;
+  }
+  .addon-row .price-col {
+    color: var(--brand);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .addon-row .price-col .per {
+    color: var(--text-3);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .addon-row .qty {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .addon-row .qty button {
+    width: 30px; height: 30px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-2);
+    font-family: inherit;
+  }
+  .addon-row .qty button:hover { background: var(--bg); border-color: var(--brand); color: var(--brand); }
+  .addon-row .qty input {
+    width: 48px;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 6px 4px;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: inherit;
+    outline: none;
+  }
+  .addon-row .qty input:focus { border-color: var(--brand); }
+  .addon-row .total-col {
+    text-align: right;
+    font-weight: 700;
+    font-size: 14.5px;
+  }
+  .addon-row .total-col .zero { color: var(--text-3); font-weight: 500; }
+
+  /* Order summary */
+  .summary {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 22px;
+  }
+  .summary-rows .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .summary-rows .row:last-child { border-bottom: none; }
+  .summary-rows .row .lbl { color: var(--text-2); }
+  .summary-rows .row .v { font-weight: 600; }
+  .summary-rows .row.total .lbl { font-weight: 700; font-size: 15px; color: var(--text); }
+  .summary-rows .row.total .v { font-weight: 800; font-size: 22px; color: var(--brand); }
+  .summary-rows .row.discount .v { color: var(--success); }
+
+  .summary-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    justify-content: flex-end;
+  }
+  .summary-actions button {
+    padding: 11px 18px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .summary-actions button.primary {
+    background: var(--brand);
+    color: white;
+    border-color: var(--brand);
+  }
+  .summary-actions button:hover { background: var(--bg); }
+  .summary-actions button.primary:hover { background: var(--brand-dark); }
+
+  /* Billing form */
+  .form-grid {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 22px;
+  }
+  .form-grid h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.2px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-row.thirds { grid-template-columns: 1fr 1fr 1fr; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 4px;
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: inherit;
+    background: white;
+    outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--brand); }
+  .field input[readonly] { background: var(--bg); color: var(--text-2); }
+
+  /* Lead delivery card */
+  .delivery-card {
+    background: linear-gradient(135deg, rgba(15,118,110,0.06), rgba(15,118,110,0.02));
+    border: 1px solid rgba(15,118,110,0.20);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .delivery-card .delivery-icon {
+    width: 42px; height: 42px;
+    background: rgba(15,118,110,0.12);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .delivery-card .delivery-body { flex: 1; min-width: 0; }
+  .delivery-card .delivery-lbl {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    color: var(--brand);
+    margin-bottom: 8px;
+  }
+  .delivery-card .delivery-flow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .delivery-card .step {
+    color: var(--text-3);
+    background: white;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12.5px;
+  }
+  .delivery-card .step b {
+    color: var(--text-3);
+    margin-right: 4px;
+    font-weight: 700;
+  }
+  .delivery-card .step.active {
+    background: white;
+    border-color: var(--brand);
+    color: var(--text);
+  }
+  .delivery-card .step.active b {
+    color: var(--brand);
+  }
+  .delivery-card .step-arrow {
+    color: var(--text-3);
+    font-size: 14px;
+  }
+  .delivery-card .delivery-edit {
+    background: white;
+    border: 1px solid var(--brand);
+    color: var(--brand);
+    padding: 9px 14px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 12.5px;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .delivery-card .delivery-edit:hover {
+    background: var(--brand);
+    color: white;
+  }
+
+  /* ====== LEADS VIEW ====== */
+  .leads-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .leads-toolbar .search {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 380px;
+  }
+  .leads-toolbar .search input {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 9px 0;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+  }
+  .leads-toolbar .search .icon { color: var(--text-3); font-size: 14px; }
+  .leads-toolbar .filter {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    color: var(--text-2);
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .leads-toolbar .filter:hover { border-color: var(--brand); }
+  .leads-toolbar .export {
+    margin-left: auto;
+    background: var(--brand);
+    color: white;
+    border: 1px solid var(--brand);
+    padding: 9px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .leads-toolbar .export:hover { background: var(--brand-dark); }
+
+  .leads-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .leads-stats .stat {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+  }
+  .leads-stats .stat .lbl { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 5px; }
+  .leads-stats .stat .v { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+  .leads-stats .stat .v small { font-size: 12px; color: var(--text-3); font-weight: 500; }
+
+  .leads-table-wrap {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .leads-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .leads-table th, .leads-table td {
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .leads-table th {
+    background: #F8FAFC;
+    color: var(--text-3);
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .leads-table tr:hover td { background: #FAFBFC; }
+  .leads-table tr:last-child td { border-bottom: none; }
+  .leads-table .nm b { display: block; font-weight: 700; color: var(--text); }
+  .leads-table .nm .e { color: var(--text-3); font-size: 11px; margin-top: 1px; }
+  .leads-table .co b { display: block; font-weight: 600; }
+  .leads-table .co .t { color: var(--text-3); font-size: 11px; margin-top: 1px; }
+  .leads-table .pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .leads-table .pill.meeting { background: rgba(99,102,241,0.14); color: var(--accent); }
+  .leads-table .pill.sheet { background: rgba(245,158,11,0.14); color: var(--warning); }
+  .leads-table .pill.fu { background: rgba(15,118,110,0.14); color: var(--brand); }
+  .leads-table .pill.none { background: #F1F5F9; color: var(--text-3); }
+  .leads-table .device {
+    color: var(--text-3);
+    font-size: 11px;
+    font-family: ui-monospace, 'SF Mono', monospace;
+  }
+  .leads-table .opt {
+    color: var(--success);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .leads-table .opt.no { color: var(--text-3); }
+  .leads-table .notes-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-2);
+    font-style: italic;
+    font-size: 11.5px;
+  }
+
+  .table-footer {
+    padding: 11px 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-2);
+    background: #FAFBFC;
+  }
+  .table-footer .pagination { display: flex; gap: 4px; }
+  .table-footer .pagination button {
+    padding: 4px 9px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .table-footer .pagination button.active {
+    background: var(--brand);
+    color: white;
+    border-color: var(--brand);
+  }
+
+  /* Checkout modal */
+  .ck-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+  .ck-overlay.open { display: flex; }
+  .ck-modal {
+    background: white;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 540px;
+    max-height: 86vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+  .ck-head {
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ck-head h3 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .ck-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-3);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    font-family: inherit;
+  }
+  .ck-close:hover { color: var(--text); }
+  .ck-body { padding: 18px 24px; }
+  .ck-section { margin-bottom: 20px; }
+  .ck-section:last-child { margin-bottom: 0; }
+  .ck-section-lbl {
+    font-size: 10.5px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .ck-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13.5px;
+    color: var(--text-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .ck-row:last-child { border-bottom: none; }
+  .ck-row.ck-total {
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--text);
+    margin-top: 4px;
+    border-top: 2px solid var(--text);
+    border-bottom: none;
+    padding-top: 12px;
+  }
+  .ck-row.ck-total div:last-child { color: var(--brand); font-size: 20px; letter-spacing: -0.4px; }
+  .ck-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #FAFBFC;
+  }
+  .ck-card-icon {
+    width: 40px; height: 40px;
+    background: var(--brand);
+    color: white;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .ck-card-info { flex: 1; }
+  .ck-card-name { font-weight: 700; font-size: 14px; color: var(--text); }
+  .ck-card-meta { color: var(--text-3); font-size: 12px; margin-top: 2px; }
+  .ck-change { color: var(--brand); font-weight: 600; font-size: 12.5px; text-decoration: none; }
+  .ck-billing {
+    color: var(--text-2);
+    font-size: 13px;
+    line-height: 1.55;
+    padding: 12px 14px;
+    background: #FAFBFC;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+  }
+  .ck-foot {
+    padding: 14px 24px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .ck-foot button {
+    padding: 11px 22px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .ck-foot button.primary {
+    background: var(--brand);
+    color: white;
+    border-color: var(--brand);
+  }
+  .ck-foot button:hover { background: var(--bg); }
+  .ck-foot button.primary:hover { background: var(--brand-dark); }
+
+  .ck-success {
+    padding: 40px 32px 30px;
+    text-align: center;
+  }
+  .ck-success-icon {
+    width: 64px; height: 64px;
+    background: var(--success);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 auto 16px;
+  }
+  .ck-success h3 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .ck-success p {
+    color: var(--text-2);
+    font-size: 13.5px;
+    margin-bottom: 18px;
+    line-height: 1.55;
+  }
+  .ck-success-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 14px;
+    background: #F8FAFC;
+    border-radius: 9px;
+    text-align: left;
+  }
+  .ck-success-meta > div { display: flex; flex-direction: column; gap: 3px; }
+  .ck-success-meta span { font-size: 10.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
+  .ck-success-meta strong { font-size: 14px; color: var(--text); font-weight: 700; }
+  .ck-success button {
+    padding: 11px 22px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: var(--brand);
+    color: white;
+    font-family: inherit;
+  }
+  .ck-success button:hover { background: var(--brand-dark); }
+</style>
+</head>
+<body>
+  <div class="demo-bar">
+    <div></div>
+    <div class="toggle">
+      View as:
+      <a href="/" class="active">Exhibitor</a>
+      <a href="/admin">Admin Console</a>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-mark">TS</div>
+        <div class="logo-text">TechSummit 2026<small>October 14 – 16  ·  Las Vegas Convention Center</small></div>
+      </div>
+      <div class="header-meta">
+        <strong>Contoso Inc.</strong>
+        sarah.chen@contoso.com
+        <div><span class="booth">Booth #B-247 · West Hall</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-title">
+    <div class="page-title-inner">
+      <h1>Exhibitor Portal</h1>
+      <p>Manage your packages, devices, and post-event lead data — all in one place.</p>
+      <div class="tabs">
+        <a onclick="showView('order', this)" class="active">📦 Products &amp; Order</a>
+        <a onclick="showView('leads', this)">📊 Leads <span class="num">247</span></a>
+        <a onclick="showView('billing', this)">💳 Billing</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- =========== ORDER VIEW =========== -->
+    <div class="view active" id="view-order">
+      <div class="current-card">
+        <div>
+          <div class="lbl">Your current package</div>
+          <div class="pkg-name">Pro <span class="status-pill paid">Paid · Active</span></div>
+          <div class="meta">3 iPhone rentals · Order #LR-2026-00847</div>
+        </div>
+        <div class="license-block">
+          <div class="license-num">5</div>
+          <div class="license-lbl">active licenses</div>
+        </div>
+        <div class="price">
+          $879
+          <small>Paid May 18, 2026</small>
+        </div>
+      </div>
+
+      <div class="sec-h">
+        <div>
+          <h2>Upgrade your package</h2>
+          <div class="h-sub">Need more devices or features? Move to a higher tier any time before the event.</div>
+        </div>
+      </div>
+
+      <div class="upgrade-grid">
+        <div class="pkg-opt">
+          <div class="name">Basic</div>
+          <div class="price">$349 <small>/ event</small></div>
+          <div class="lic-count">2<span class="lbl">licenses</span></div>
+          <ul>
+            <li>Standard lead capture</li>
+            <li>CSV export</li>
+            <li>Email support</li>
+          </ul>
+          <button class="opt-btn">Downgrade</button>
+        </div>
+
+        <div class="pkg-opt current">
+          <div class="name">Pro</div>
+          <div class="price">$699 <small>/ event</small></div>
+          <div class="lic-count">5<span class="lbl">licenses</span></div>
+          <ul>
+            <li>Custom qualifiers + dashboards</li>
+            <li>CRM integration (SF, HubSpot)</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="opt-btn">Current plan</button>
+        </div>
+
+        <div class="pkg-opt">
+          <div class="name">Enterprise</div>
+          <div class="price">$1,499 <small>/ event</small></div>
+          <div class="lic-count">20<span class="lbl">licenses</span></div>
+          <ul>
+            <li>AI lead enrichment</li>
+            <li>Templates, surveys, branded emails</li>
+            <li>Dedicated CSM</li>
+          </ul>
+          <button class="opt-btn">Upgrade to Enterprise</button>
+        </div>
+      </div>
+
+      <div class="sec-h">
+        <div>
+          <h2>Rentals</h2>
+          <div class="h-sub">Pre-configured devices delivered to your booth. Add quickly without going to the full add-ons tab.</div>
+        </div>
+      </div>
+
+      <div class="rentals-grid">
+        <div class="rental-card" data-price="120" data-name="iPhone rental">
+          <div class="visual">
+            <div class="tag">Smartphone</div>
+            <div class="device">
+              <svg width="140" height="240" viewBox="0 0 140 280" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <clipPath id="iphone-clip-ex">
+                    <rect x="5" y="6" width="130" height="268" rx="18" ry="18"/>
+                  </clipPath>
+                </defs>
+                <rect x="0" y="0" width="140" height="280" rx="22" ry="22" fill="#1a1a1a"/>
+                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128785/app_home_krcr2l.png"
+                       x="5" y="6" width="130" height="268"
+                       preserveAspectRatio="xMidYMid slice"
+                       clip-path="url(#iphone-clip-ex)"/>
+                <rect x="50" y="14" width="40" height="9" rx="4.5" fill="#000"/>
+                <rect x="50" y="265" width="40" height="3" rx="1.5" fill="#000" opacity="0.65"/>
+              </svg>
+            </div>
+          </div>
+          <div class="body">
+            <div class="name">iPhone Rental</div>
+            <div class="desc">iPhone 13 pre-installed with scanning software. Picked up at registration.</div>
+            <div class="amt">$120<span class="per">/ device</span></div>
+            <div class="qty-control">
+              <span class="qty-lbl">Quantity</span>
+              <button onclick="adj(this, -1)">−</button>
+              <span class="num">3</span>
+              <button onclick="adj(this, 1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="rental-card" data-price="150" data-name="iPad rental">
+          <div class="visual">
+            <div class="tag">Tablet</div>
+            <div class="device">
+              <svg width="200" height="240" viewBox="0 0 240 290" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <clipPath id="ipad-clip-ex">
+                    <rect x="10" y="12" width="220" height="266" rx="6" ry="6"/>
+                  </clipPath>
+                </defs>
+                <rect x="0" y="0" width="240" height="290" rx="18" ry="18" fill="#1a1a1a"/>
+                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128589/app_welcome_ez5yxd.png"
+                       x="10" y="12" width="220" height="266"
+                       preserveAspectRatio="xMidYMid slice"
+                       clip-path="url(#ipad-clip-ex)"/>
+                <circle cx="120" cy="6" r="2" fill="#444"/>
+              </svg>
+            </div>
+          </div>
+          <div class="body">
+            <div class="name">iPad Rental</div>
+            <div class="desc">iPad with scanning software. Ideal for larger booths and stationary check-in.</div>
+            <div class="amt">$150<span class="per">/ device</span></div>
+            <div class="qty-control">
+              <span class="qty-lbl">Quantity</span>
+              <button onclick="adj(this, -1)">−</button>
+              <span class="num">0</span>
+              <button onclick="adj(this, 1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD-ONS SECTION (merged from old Add-ons tab) -->
+      <div class="sec-h">
+        <div>
+          <h2>Add-ons</h2>
+          <div class="h-sub">Optional features and services — adjust quantities to update your order.</div>
+        </div>
+      </div>
+
+      <div class="addons-form">
+        <div class="addon-row head">
+          <div></div>
+          <div>Item</div>
+          <div>Unit price</div>
+          <div style="text-align: center;">Quantity</div>
+          <div style="text-align: right;">Subtotal</div>
+        </div>
+
+        <div class="addon-row" data-price="249" data-name="AI Lead Enrichment - 100 records">
+          <div class="ic">✨</div>
+          <div class="info">
+            <b>AI Lead Enrichment - 100 records</b>
+            <p>Auto-enrich every captured lead with firmographics, intent signals, and recommended follow-up.</p>
+          </div>
+          <div class="price-col">$249<span class="per"> flat</span></div>
+          <div class="qty">
+            <button onclick="adj(this, -1)">−</button>
+            <input type="text" value="0" />
+            <button onclick="adj(this, 1)">+</button>
+          </div>
+          <div class="total-col"><span class="zero">$0</span></div>
+        </div>
+
+        <div class="addon-row" data-price="95" data-name="Basic AI Enrichment - 100 records">
+          <div class="ic">✨</div>
+          <div class="info">
+            <b>Basic AI Enrichment - 100 records</b>
+            <p>Auto-enrich every captured lead with firmographics.</p>
+          </div>
+          <div class="price-col">$95<span class="per"> flat</span></div>
+          <div class="qty">
+            <button onclick="adj(this, -1)">−</button>
+            <input type="text" value="0" />
+            <button onclick="adj(this, 1)">+</button>
+          </div>
+          <div class="total-col"><span class="zero">$0</span></div>
+        </div>
+
+        <div class="addon-row" data-price="99" data-name="Custom Questionnaires">
+          <div class="ic">📋</div>
+          <div class="info">
+            <b>Custom Questionnaires</b>
+            <p>Build your own lead qualifier flow. Required-field validation, branching logic, multi-language.</p>
+          </div>
+          <div class="price-col">$99<span class="per"> flat</span></div>
+          <div class="qty">
+            <button onclick="adj(this, -1)">−</button>
+            <input type="text" value="0" />
+            <button onclick="adj(this, 1)">+</button>
+          </div>
+          <div class="total-col"><span class="zero">$0</span></div>
+        </div>
+
+        <div class="addon-row" data-price="149" data-name="Branded Follow-up Emails">
+          <div class="ic">📧</div>
+          <div class="info">
+            <b>Branded Follow-up Emails</b>
+            <p>Auto-sent personalized email to every captured lead, branded with your logo and copy.</p>
+          </div>
+          <div class="price-col">$149<span class="per"> flat</span></div>
+          <div class="qty">
+            <button onclick="adj(this, -1)">−</button>
+            <input type="text" value="0" />
+            <button onclick="adj(this, 1)">+</button>
+          </div>
+          <div class="total-col"><span class="zero">$0</span></div>
+        </div>
+
+        <div class="addon-row" data-price="199" data-name="CRM Integration">
+          <div class="ic">🔌</div>
+          <div class="info">
+            <b>CRM Integration</b>
+            <p>Auto-sync leads into Salesforce, HubSpot, or any major CRM. Live data flow during the event.</p>
+          </div>
+          <div class="price-col">$199<span class="per"> flat</span></div>
+          <div class="qty">
+            <button onclick="adj(this, -1)">−</button>
+            <input type="text" value="0" />
+            <button onclick="adj(this, 1)">+</button>
+          </div>
+          <div class="total-col"><span class="zero">$0</span></div>
+        </div>
+
+        <div class="addon-row" data-price="45" data-name="Additional Profile Questions (5)">
+          <div class="ic">➕</div>
+          <div class="info">
+            <b>Additional Profile Questions (5)</b>
+            <p>Five qualifier questions are included in your package. Add more in blocks of 5.</p>
+          </div>
+          <div class="price-col">$45<span class="per"> / block</span></div>
+          <div class="qty">
+            <button onclick="adj(this, -1)">−</button>
+            <input type="text" value="0" />
+            <button onclick="adj(this, 1)">+</button>
+          </div>
+          <div class="total-col"><span class="zero">$0</span></div>
+        </div>
+
+        <div class="addon-row" data-price="450" data-name="API Developer Access">
+          <div class="ic">🔧</div>
+          <div class="info">
+            <b>API Developer Access</b>
+            <p>Build your own integrations on top of our scanning API. Includes documentation and sandbox.</p>
+          </div>
+          <div class="price-col">$450<span class="per"> flat</span></div>
+          <div class="qty">
+            <button onclick="adj(this, -1)">−</button>
+            <input type="text" value="0" />
+            <button onclick="adj(this, 1)">+</button>
+          </div>
+          <div class="total-col"><span class="zero">$0</span></div>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="summary-rows">
+          <div class="row"><div class="lbl">Pro package</div><div class="v">$699</div></div>
+          <div class="row"><div class="lbl">iPhone rental × 3</div><div class="v">$360</div></div>
+          <div class="row discount"><div class="lbl">Early-bird discount (−10%)</div><div class="v">−$106</div></div>
+          <div class="row total"><div class="lbl">Total</div><div class="v">$953</div></div>
+        </div>
+        <div class="summary-actions">
+          <button>Save as draft</button>
+          <button class="primary" onclick="openCheckout()">Checkout &amp; pay $953 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========== LEADS VIEW =========== -->
+    <div class="view" id="view-leads">
+      <div class="delivery-card">
+        <div class="delivery-icon">📤</div>
+        <div class="delivery-body">
+          <div class="delivery-lbl">How leads are delivered</div>
+          <div class="delivery-flow">
+            <span class="step active"><b>1.</b> Captured on-site</span>
+            <span class="step-arrow">→</span>
+            <span class="step active"><b>2.</b> Synced to <b>Salesforce</b></span>
+            <span class="step-arrow">→</span>
+            <span class="step active"><b>3.</b> Daily digest to <b>3 recipients</b></span>
+            <span class="step-arrow">→</span>
+            <span class="step"><b>4.</b> CSV available anytime</span>
+          </div>
+        </div>
+        <button class="delivery-edit">Edit delivery →</button>
+      </div>
+
+      <div class="sec-h">
+        <div>
+          <h2>Captured leads</h2>
+          <div class="h-sub">Real-time data from the badge scans at your booth.</div>
+        </div>
+      </div>
+
+      <div class="leads-stats">
+        <div class="stat">
+          <div class="lbl">Total leads</div>
+          <div class="v">247</div>
+        </div>
+        <div class="stat">
+          <div class="lbl">Hot (meeting requested)</div>
+          <div class="v">38 <small>· 15%</small></div>
+        </div>
+        <div class="stat">
+          <div class="lbl">Email opt-in</div>
+          <div class="v">211 <small>· 85%</small></div>
+        </div>
+        <div class="stat">
+          <div class="lbl">Devices in use</div>
+          <div class="v">5 / 5</div>
+        </div>
+      </div>
+
+      <div class="leads-toolbar">
+        <div class="search">
+          <span class="icon">🔍</span>
+          <input placeholder="Search leads by name, company, email…" />
+        </div>
+        <button class="filter">Follow-up ▾</button>
+        <button class="filter">Product interest ▾</button>
+        <button class="filter">Booth staff ▾</button>
+        <button class="filter">Day ▾</button>
+        <button class="export">📤 Export to CSV</button>
+      </div>
+
+      <div class="leads-table-wrap">
+        <table class="leads-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Company / Title</th>
+              <th>Location</th>
+              <th>Captured at</th>
+              <th>Device</th>
+              <th>Follow-up</th>
+              <th>Product interest</th>
+              <th>Notes</th>
+              <th>Opt-in</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="nm"><b>Robert Carter</b><div class="e">r.carter@fabrikam.com</div></td>
+              <td class="co"><b>Fabrikam Industries</b><div class="t">Director, Platform Engineering</div></td>
+              <td>Austin, TX</td>
+              <td>Oct 14, 10:12 AM</td>
+              <td class="device">iPhone-01</td>
+              <td><span class="pill sheet">Product sheets</span></td>
+              <td>Analytics platform</td>
+              <td class="notes-cell">—</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Diana Voss</b><div class="e">d.voss@northwind.com</div></td>
+              <td class="co"><b>Northwind Traders</b><div class="t">Marketing Manager</div></td>
+              <td>Denver, CO</td>
+              <td>Oct 14, 11:48 AM</td>
+              <td class="device">iPhone-02</td>
+              <td><span class="pill sheet">Product sheets</span></td>
+              <td>AI integration</td>
+              <td class="notes-cell">Asked about Q3 demo</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Joanne Park</b><div class="e">j.park@litware.com</div></td>
+              <td class="co"><b>Litware Inc.</b><div class="t">CEO</div></td>
+              <td>Miami, FL</td>
+              <td>Oct 14, 2:18 PM</td>
+              <td class="device">iPhone-01</td>
+              <td><span class="pill meeting">Meeting</span></td>
+              <td>Partnership discussion</td>
+              <td class="notes-cell">Wants intro to leadership, calling next Tues</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Michael Reed</b><div class="e">m.reed@adventureworks.com</div></td>
+              <td class="co"><b>Adventure Works</b><div class="t">Founder</div></td>
+              <td>Phoenix, AZ</td>
+              <td>Oct 14, 4:00 PM</td>
+              <td class="device">iPad-01</td>
+              <td><span class="pill none">—</span></td>
+              <td>—</td>
+              <td class="notes-cell">—</td>
+              <td><span class="opt no">—</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>—</b><div class="e">—</div></td>
+              <td class="co"><b>Adatum Corporation</b><div class="t">—</div></td>
+              <td>San Diego, CA</td>
+              <td>Oct 14, 5:12 PM</td>
+              <td class="device">iPhone-03</td>
+              <td><span class="pill none">—</span></td>
+              <td>—</td>
+              <td class="notes-cell">—</td>
+              <td><span class="opt no">—</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Sarah Hayes</b><div class="e">s.hayes@wingtip.com</div></td>
+              <td class="co"><b>Wingtip Solutions</b><div class="t">VP, Procurement</div></td>
+              <td>Boston, MA</td>
+              <td>Oct 15, 9:14 AM</td>
+              <td class="device">iPhone-02</td>
+              <td><span class="pill meeting">Meeting</span></td>
+              <td>Enterprise plan</td>
+              <td class="notes-cell">Schedule for end of Q3, sending RFP draft</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>David Cohen</b><div class="e">d.cohen@treyresearch.com</div></td>
+              <td class="co"><b>Trey Research</b><div class="t">Procurement Lead</div></td>
+              <td>Seattle, WA</td>
+              <td>Oct 15, 10:45 AM</td>
+              <td class="device">iPhone-04</td>
+              <td><span class="pill fu">Follow-up email</span></td>
+              <td>Custom integration</td>
+              <td class="notes-cell">Send pricing for 50-unit deployment</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Linda Park</b><div class="e">l.park@cohovineyard.com</div></td>
+              <td class="co"><b>Coho Vineyard</b><div class="t">Director, Operations</div></td>
+              <td>Chicago, IL</td>
+              <td>Oct 15, 11:22 AM</td>
+              <td class="device">iPhone-01</td>
+              <td><span class="pill meeting">Meeting</span></td>
+              <td>Analytics platform</td>
+              <td class="notes-cell">Connected with team. Coffee Wed AM.</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Raj Patel</b><div class="e">r.patel@proseware.com</div></td>
+              <td class="co"><b>Proseware Inc.</b><div class="t">Senior Engineer</div></td>
+              <td>Atlanta, GA</td>
+              <td>Oct 15, 1:03 PM</td>
+              <td class="device">iPad-01</td>
+              <td><span class="pill sheet">Product sheets</span></td>
+              <td>API access · Cloud platform</td>
+              <td class="notes-cell">Sent spec sheet, technical follow-up scheduled</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Emily Wong</b><div class="e">e.wong@lucerne.com</div></td>
+              <td class="co"><b>Lucerne Publishing</b><div class="t">Marketing Manager</div></td>
+              <td>Portland, OR</td>
+              <td>Oct 15, 2:51 PM</td>
+              <td class="device">iPhone-03</td>
+              <td><span class="pill fu">Follow-up email</span></td>
+              <td>General interest</td>
+              <td class="notes-cell">Wants newsletter subscription</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Tom Bradley</b><div class="e">t.bradley@tailspin.com</div></td>
+              <td class="co"><b>Tailspin Toys</b><div class="t">Procurement Specialist</div></td>
+              <td>Dallas, TX</td>
+              <td>Oct 16, 8:30 AM</td>
+              <td class="device">iPhone-02</td>
+              <td><span class="pill sheet">Product sheets</span></td>
+              <td>Security suite</td>
+              <td class="notes-cell">—</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+            <tr>
+              <td class="nm"><b>Anna Kowalski</b><div class="e">a.kowalski@wideworld.com</div></td>
+              <td class="co"><b>Wide World Importers</b><div class="t">Business Development</div></td>
+              <td>Nashville, TN</td>
+              <td>Oct 16, 11:42 AM</td>
+              <td class="device">iPhone-05</td>
+              <td><span class="pill meeting">Meeting</span></td>
+              <td>Custom integration</td>
+              <td class="notes-cell">Q4 budget discussion · Mark sending proposal</td>
+              <td><span class="opt">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="table-footer">
+          <div>Showing 12 of 247 leads</div>
+          <div class="pagination">
+            <button>←</button>
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>…</button>
+            <button>21</button>
+            <button>→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========== BILLING VIEW =========== -->
+    <div class="view" id="view-billing">
+      <div class="form-grid">
+        <h3>Billing contact</h3>
+        <div class="form-row">
+          <div class="field"><label>First name</label><input value="Sarah" /></div>
+          <div class="field"><label>Last name</label><input value="Chen" /></div>
+        </div>
+        <div class="form-row full">
+          <div class="field"><label>Email</label><input value="sarah.chen@contoso.com" /></div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <h3>Billing address</h3>
+        <div class="form-row full">
+          <div class="field"><label>Street address</label><input value="1500 Innovation Way" /></div>
+        </div>
+        <div class="form-row full">
+          <div class="field"><label>Address line 2</label><input value="Suite 400" /></div>
+        </div>
+        <div class="form-row thirds">
+          <div class="field"><label>City</label><input value="San Jose" /></div>
+          <div class="field"><label>State</label><input value="CA" /></div>
+          <div class="field"><label>ZIP</label><input value="95134" /></div>
+        </div>
+        <div class="form-row full">
+          <div class="field"><label>Country</label>
+            <select><option>United States</option><option>Canada</option><option>United Kingdom</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <h3>Shipping address (for rented hardware)</h3>
+        <div class="form-row full">
+          <div class="field" style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" checked style="width: auto;" /> <label style="margin: 0;">Same as billing address</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <h3>Payment method</h3>
+        <div class="form-row full">
+          <div class="field"><label>Card on file</label><input value="•••• •••• •••• 4242" readonly /></div>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="summary-rows">
+          <div class="row total"><div class="lbl">Order total</div><div class="v">$879</div></div>
+        </div>
+        <div class="summary-actions">
+          <button>Download invoice</button>
+          <button class="primary">Update billing</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========== CHECKOUT MODAL =========== -->
+  <div class="ck-overlay" id="checkoutModal">
+    <div class="ck-modal">
+      <div class="ck-head">
+        <h3>Checkout</h3>
+        <button class="ck-close" onclick="closeCheckout()">×</button>
+      </div>
+      <div class="ck-body" id="checkoutBody">
+        <div class="ck-section">
+          <div class="ck-section-lbl">Order summary</div>
+          <div class="ck-row"><div>Pro package</div><div>$699</div></div>
+          <div class="ck-row"><div>iPhone rental × 3</div><div>$360</div></div>
+          <div class="ck-row" style="color: var(--success);"><div>Early-bird discount (−10%)</div><div>−$106</div></div>
+          <div class="ck-row ck-total"><div>Total to pay</div><div>$953</div></div>
+        </div>
+        <div class="ck-section">
+          <div class="ck-section-lbl">Payment method</div>
+          <div class="ck-card">
+            <div class="ck-card-icon">💳</div>
+            <div class="ck-card-info">
+              <div class="ck-card-name">Visa •••• 4242</div>
+              <div class="ck-card-meta">Exp 04/28 · Default card</div>
+            </div>
+            <a href="#" class="ck-change">Change</a>
+          </div>
+        </div>
+        <div class="ck-section">
+          <div class="ck-section-lbl">Billing</div>
+          <div class="ck-billing">
+            <strong>Sarah Chen</strong><br/>
+            Contoso Inc.<br/>
+            1500 Innovation Way, Suite 400<br/>
+            San Jose, CA 95134
+          </div>
+        </div>
+      </div>
+      <div class="ck-foot" id="checkoutFoot">
+        <button onclick="closeCheckout()">Cancel</button>
+        <button class="primary" onclick="confirmPayment()">Confirm payment $953</button>
+      </div>
+      <div class="ck-success" id="checkoutSuccess" style="display:none;">
+        <div class="ck-success-icon">✓</div>
+        <h3>Payment successful</h3>
+        <p>Your order has been confirmed. A receipt is on its way to <b>sarah.chen@contoso.com</b>.</p>
+        <div class="ck-success-meta">
+          <div><span>Amount paid</span><strong>$953</strong></div>
+          <div><span>Order ID</span><strong>LR-2026-00892</strong></div>
+        </div>
+        <button class="primary" onclick="closeCheckout()" style="margin-top: 18px;">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showView(view, el) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + view).classList.add('active');
+      document.querySelectorAll('.tabs a').forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function adj(btn, delta) {
+      const parent = btn.parentNode;
+      const input = parent.querySelector('input');
+      const span = parent.querySelector('.num');
+      if (input) {
+        let v = parseInt(input.value) || 0;
+        input.value = Math.max(0, v + delta);
+      } else if (span) {
+        let v = parseInt(span.textContent) || 0;
+        span.textContent = Math.max(0, v + delta);
+      }
+      recalculate();
+    }
+
+    const PACKAGE_PRICE = 699;
+    const PACKAGE_NAME = 'Pro package';
+    const DISCOUNT_RATE = 0.10;
+
+    function collectLineItems() {
+      const items = [{ name: PACKAGE_NAME, qty: 1, subtotal: PACKAGE_PRICE }];
+
+      // Rentals from rental-card
+      document.querySelectorAll('.rental-card[data-price]').forEach(card => {
+        const numEl = card.querySelector('.num');
+        const qty = numEl ? parseInt(numEl.textContent) || 0 : 0;
+        if (qty > 0) {
+          const price = parseFloat(card.dataset.price);
+          items.push({
+            name: card.dataset.name + ' × ' + qty,
+            qty: qty,
+            subtotal: price * qty
+          });
+        }
+      });
+
+      // Add-ons from addon-row
+      document.querySelectorAll('.addon-row[data-price]').forEach(row => {
+        const qtyInput = row.querySelector('.qty input');
+        const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
+        if (qty > 0) {
+          const price = parseFloat(row.dataset.price);
+          items.push({
+            name: row.dataset.name + (qty > 1 ? ' × ' + qty : ''),
+            qty: qty,
+            subtotal: price * qty
+          });
+        }
+      });
+
+      return items;
+    }
+
+    function recalculate() {
+      // 1. Update each addon row's per-row subtotal
+      document.querySelectorAll('.addon-row[data-price]').forEach(row => {
+        const qtyInput = row.querySelector('.qty input');
+        const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
+        const price = parseFloat(row.dataset.price);
+        const subtotal = price * qty;
+        const totalEl = row.querySelector('.total-col');
+        if (totalEl) {
+          if (subtotal === 0) {
+            totalEl.innerHTML = '<span class="zero">$0</span>';
+          } else {
+            totalEl.textContent = '$' + subtotal.toLocaleString();
+          }
+        }
+      });
+
+      // 2. Aggregate line items
+      const items = collectLineItems();
+      const subtotal = items.reduce((s, i) => s + i.subtotal, 0);
+      const discount = Math.round(subtotal * DISCOUNT_RATE);
+      const total = subtotal - discount;
+
+      // 3. Re-render the summary section
+      const summaryRows = document.querySelector('.summary-rows');
+      if (summaryRows) {
+        summaryRows.innerHTML = '';
+        items.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'row';
+          row.innerHTML = '<div class="lbl">' + item.name + '</div><div class="v">$' + item.subtotal.toLocaleString() + '</div>';
+          summaryRows.appendChild(row);
+        });
+        const discountRow = document.createElement('div');
+        discountRow.className = 'row discount';
+        discountRow.innerHTML = '<div class="lbl">Early-bird discount (−10%)</div><div class="v">−$' + discount.toLocaleString() + '</div>';
+        summaryRows.appendChild(discountRow);
+        const totalRow = document.createElement('div');
+        totalRow.className = 'row total';
+        totalRow.innerHTML = '<div class="lbl">Total</div><div class="v">$' + total.toLocaleString() + '</div>';
+        summaryRows.appendChild(totalRow);
+      }
+
+      // 4. Update the checkout button text
+      const ckBtn = document.querySelector('.summary-actions button.primary');
+      if (ckBtn) ckBtn.textContent = 'Checkout & pay $' + total.toLocaleString() + ' →';
+
+      // 5. Update the order-banner top-right price
+      const banner = document.querySelector('.current-card .price');
+      if (banner && banner.childNodes[0]) {
+        banner.childNodes[0].nodeValue = '$' + total.toLocaleString();
+      }
+    }
+
+    // initial calc on load
+    document.addEventListener('DOMContentLoaded', recalculate);
+
+    function openCheckout() {
+      // Rebuild the modal content with current cart values
+      const items = collectLineItems();
+      const subtotal = items.reduce((s, i) => s + i.subtotal, 0);
+      const discount = Math.round(subtotal * DISCOUNT_RATE);
+      const total = subtotal - discount;
+
+      // First section (order summary) rebuild
+      const body = document.getElementById('checkoutBody');
+      let sumHtml = '<div class="ck-section"><div class="ck-section-lbl">Order summary</div>';
+      items.forEach(item => {
+        sumHtml += '<div class="ck-row"><div>' + item.name + '</div><div>$' + item.subtotal.toLocaleString() + '</div></div>';
+      });
+      sumHtml += '<div class="ck-row" style="color: var(--success);"><div>Early-bird discount (−10%)</div><div>−$' + discount.toLocaleString() + '</div></div>';
+      sumHtml += '<div class="ck-row ck-total"><div>Total to pay</div><div>$' + total.toLocaleString() + '</div></div>';
+      sumHtml += '</div>';
+
+      // Keep payment + billing sections unchanged (rebuild them too for safety)
+      sumHtml += '<div class="ck-section"><div class="ck-section-lbl">Payment method</div>' +
+        '<div class="ck-card"><div class="ck-card-icon">💳</div><div class="ck-card-info">' +
+        '<div class="ck-card-name">Visa •••• 4242</div><div class="ck-card-meta">Exp 04/28 · Default card</div>' +
+        '</div><a href="#" class="ck-change">Change</a></div></div>';
+      sumHtml += '<div class="ck-section"><div class="ck-section-lbl">Billing</div>' +
+        '<div class="ck-billing"><strong>Sarah Chen</strong><br/>Contoso Inc.<br/>1500 Innovation Way, Suite 400<br/>San Jose, CA 95134</div></div>';
+
+      body.innerHTML = sumHtml;
+      body.style.display = 'block';
+
+      // Update confirm button text
+      const foot = document.getElementById('checkoutFoot');
+      foot.innerHTML = '<button onclick="closeCheckout()">Cancel</button>' +
+        '<button class="primary" onclick="confirmPayment(' + total + ')">Confirm payment $' + total.toLocaleString() + '</button>';
+      foot.style.display = 'flex';
+
+      document.getElementById('checkoutSuccess').style.display = 'none';
+      document.getElementById('checkoutModal').classList.add('open');
+    }
+    function closeCheckout() {
+      document.getElementById('checkoutModal').classList.remove('open');
+    }
+    function confirmPayment(total) {
+      document.getElementById('checkoutBody').style.display = 'none';
+      document.getElementById('checkoutFoot').style.display = 'none';
+      const success = document.getElementById('checkoutSuccess');
+      // Update the amount paid in the success state
+      const meta = success.querySelector('.ck-success-meta');
+      if (meta && total) {
+        const amt = meta.querySelector('div:first-child strong');
+        if (amt) amt.textContent = '$' + total.toLocaleString();
+      }
+      success.style.display = 'block';
+    }
+    // close on overlay click
+    document.getElementById('checkoutModal').addEventListener('click', e => {
+      if (e.target.id === 'checkoutModal') closeCheckout();
+    });
+  </script>
+</body>
+</html>

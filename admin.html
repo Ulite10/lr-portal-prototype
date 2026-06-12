@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Console · TechSummit 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --sidebar: #0F172A;
+    --sidebar-hover: #1E293B;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-2: #475569;
+    --text-3: #94A3B8;
+    --accent: #6366F1;
+    --accent-light: #EEF2FF;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .demo-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #0F172A;
+    color: white;
+    padding: 8px 24px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+  }
+  .demo-bar .label { opacity: 0.7; margin-right: 6px; }
+  .demo-bar a { color: #93C5FD; text-decoration: none; font-weight: 500; }
+  .demo-bar .toggle { display: flex; gap: 8px; align-items: center; }
+  .demo-bar .toggle a { padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.1); }
+  .demo-bar .toggle a.active { background: #6366F1; color: white; }
+
+  .sidebar {
+    width: 220px;
+    background: var(--sidebar);
+    color: white;
+    padding: 32px 0 12px;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-brand {
+    padding: 12px 20px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-brand .mark {
+    width: 34px; height: 34px;
+    background: var(--accent);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px;
+    color: white;
+  }
+  .sidebar-brand .name {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.2px;
+  }
+  .sidebar-brand .name small {
+    display: block;
+    font-size: 10.5px;
+    color: #94A3B8;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-event {
+    margin: 0 12px 16px;
+    background: rgba(99, 102, 241, 0.14);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .sidebar-event .lbl {
+    font-size: 10px; color: #94A3B8;
+    text-transform: uppercase; letter-spacing: 1px;
+    font-weight: 700; margin-bottom: 4px;
+  }
+  .sidebar-event .v { font-size: 13.5px; font-weight: 700; }
+  .sidebar-event .dates { font-size: 11.5px; color: #94A3B8; margin-top: 2px; }
+
+  .sidebar nav {
+    flex: 1;
+  }
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    color: #94A3B8;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    margin-right: 12px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sidebar nav a:hover {
+    background: var(--sidebar-hover);
+    color: white;
+  }
+  .sidebar nav a.active {
+    background: rgba(99, 102, 241, 0.18);
+    color: white;
+    border-left-color: var(--accent);
+  }
+  .sidebar nav a .icon { font-size: 15px; }
+
+  .sidebar-footer {
+    padding: 12px 18px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #94A3B8;
+    font-size: 13px;
+  }
+  .sidebar-footer .avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), #818CF8);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 11.5px;
+  }
+  .sidebar-footer .name { color: white; font-weight: 600; font-size: 13px; }
+  .sidebar-footer .role { font-size: 11px; }
+
+  .main {
+    flex: 1;
+    margin-left: 220px;
+    margin-top: 32px;
+    padding: 28px 36px 48px;
+  }
+
+  .page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+  .page-head h1 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    margin-bottom: 4px;
+  }
+  .page-head p {
+    font-size: 13.5px;
+    color: var(--text-2);
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+  .actions button, .actions a.btn-link {
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    text-decoration: none;
+  }
+  .actions button.primary, .actions a.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .actions button:hover { background: var(--bg); }
+  .actions button.primary:hover { background: #4F46E5; }
+
+  /* Sections */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  @keyframes fadeOut {
+    0% { opacity: 0; transform: translateY(8px); }
+    15% { opacity: 1; transform: translateY(0); }
+    75% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-4px); }
+  }
+
+  /* Products section */
+  .section-h {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 12px;
+  }
+  .section-h h2 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+  .section-h .sub {
+    color: var(--text-2);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .packages-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .pkg-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .pkg-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(99,102,241,0.04), white);
+  }
+  .pkg-card {
+    display: flex;
+    flex-direction: column;
+  }
+  .pkg-card .name {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 2px;
+  }
+  .pkg-card .badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 6px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+  .pkg-card .desc {
+    color: var(--text-2);
+    font-size: 12.5px;
+    margin-bottom: 12px;
+  }
+  .pkg-card .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .pkg-card .price-row .price {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .pkg-card .price-row .per {
+    color: var(--text-3);
+    font-size: 13px;
+  }
+  .pkg-card .feat {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    list-style: none;
+  }
+  .pkg-card .feat li {
+    padding: 3px 0;
+    color: var(--text-3);
+    font-size: 12px;
+    display: flex;
+    gap: 8px;
+  }
+  .pkg-card .feat li::before {
+    content: "✓";
+    color: var(--success);
+    font-weight: 700;
+  }
+  .pkg-card .feat li b { color: var(--text); font-weight: 600; }
+  .pkg-card .lic-count {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -1px;
+    margin-top: 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    line-height: 1;
+  }
+  .pkg-card .lic-count .lbl {
+    font-size: 12px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  .pkg-card .edit-row {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .pkg-card .edit-row .meta {
+    font-size: 11.5px;
+    color: var(--text-3);
+  }
+  .pkg-card .edit-row a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+
+  /* Add-ons table */
+  .addon-table-wrap {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .addon-table { width: 100%; border-collapse: collapse; }
+  .addon-table th, .addon-table td {
+    padding: 11px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .addon-table th {
+    background: #F8FAFC;
+    color: var(--text-3);
+    font-weight: 700;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .addon-table tr:last-child td { border-bottom: none; }
+  .addon-table .name-cell { display: flex; align-items: center; gap: 10px; }
+  .addon-table .icon-box {
+    width: 32px; height: 32px;
+    background: var(--accent-light);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+  .addon-table .name-cell b { color: var(--text); font-weight: 700; font-size: 13px; }
+  .addon-table .name-cell .d { color: var(--text-3); font-size: 11.5px; }
+  .addon-table .price { font-weight: 700; color: var(--accent); }
+  .addon-table .status-pill {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .addon-table .status-pill.active { background: rgba(16,185,129,0.14); color: var(--success); }
+  .addon-table .status-pill.draft { background: rgba(148,163,184,0.18); color: var(--text-3); }
+  .addon-table .actions-cell a { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 12px; margin-right: 14px; }
+
+  /* Exhibitors */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+  .search {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 380px;
+  }
+  .search input {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 9px 0;
+    font-size: 13.5px;
+    font-family: inherit;
+    outline: none;
+  }
+  .search .icon { color: var(--text-3); font-size: 15px; }
+  .filter-pill {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 9px;
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .filter-pill:hover { border-color: var(--accent); }
+
+  .exhibitor-table-wrap {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .exhibitor-table { width: 100%; border-collapse: collapse; }
+  .exhibitor-table th, .exhibitor-table td {
+    padding: 11px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+  .exhibitor-table th {
+    background: #F8FAFC;
+    color: var(--text-3);
+    font-weight: 700;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .exhibitor-table tr:hover td { background: #FAFBFC; }
+  .exhibitor-table tr:last-child td { border-bottom: none; }
+  .exhibitor-table td.company b { display: block; font-weight: 700; color: var(--text); }
+  .exhibitor-table td.company .booth { color: var(--text-3); font-size: 11.5px; margin-top: 2px; }
+  .exhibitor-table td .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .exhibitor-table td .pill.basic { background: #F1F5F9; color: var(--text-2); }
+  .exhibitor-table td .pill.pro { background: rgba(99,102,241,0.14); color: var(--accent); }
+  .exhibitor-table td .pill.ent { background: rgba(15, 118, 110, 0.14); color: #0F766E; }
+  .exhibitor-table td .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 600;
+  }
+  .exhibitor-table td .status::before {
+    content: "●"; font-size: 9px;
+  }
+  .exhibitor-table td .status.paid { color: var(--success); }
+  .exhibitor-table td .status.pending { color: var(--warning); }
+  .exhibitor-table td .status.trial { color: var(--text-3); }
+  .exhibitor-table td.addons {
+    color: var(--text-2);
+    font-size: 11.5px;
+  }
+  .exhibitor-table td.total { font-weight: 700; color: var(--text); }
+  .exhibitor-table td.actions a {
+    color: var(--accent); text-decoration: none; font-weight: 600; font-size: 12px;
+  }
+
+  .table-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    color: var(--text-2);
+    background: #FAFBFC;
+  }
+  .table-footer .pagination {
+    display: flex;
+    gap: 4px;
+  }
+  .table-footer .pagination button {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .table-footer .pagination button.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .summary-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .stat {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat .lbl { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 6px; }
+  .stat .v { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+  .stat .v small { color: var(--text-3); font-size: 12px; font-weight: 500; }
+
+  /* Settings page */
+  .settings-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .settings-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    margin-bottom: 4px;
+  }
+  .settings-card .settings-desc {
+    color: var(--text-2);
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .setting-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+  }
+  .settings-card h3 + .setting-row { border-top: none; padding-top: 4px; }
+  .settings-card .settings-desc + .setting-row { border-top: none; padding-top: 0; }
+  .setting-row label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .setting-row input[type="text"] {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: inherit;
+    background: white;
+    outline: none;
+    width: 100%;
+    max-width: 480px;
+  }
+  .setting-row input[type="text"]:focus { border-color: var(--accent); }
+
+  .upload-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: #FAFBFC;
+    max-width: 520px;
+  }
+  .upload-box .upload-preview {
+    width: 44px; height: 44px;
+    border-radius: 9px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .upload-box .logo-thumb {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #0F766E, #115E59);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px;
+    border-radius: 9px;
+  }
+  .upload-box .upload-icon {
+    width: 44px; height: 44px;
+    border-radius: 9px;
+    background: var(--accent-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .upload-box .upload-meta { flex: 1; min-width: 0; }
+  .upload-box .upload-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .upload-box .upload-info { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+  .upload-box .btn-secondary {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-2);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .upload-box .btn-secondary:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+
+  .colors-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .color-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px 6px 6px;
+  }
+  .color-input .swatch {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .color-input input {
+    width: 90px;
+    padding: 6px 8px;
+    border: none;
+    font-size: 12.5px;
+    font-family: ui-monospace, 'SF Mono', monospace;
+    background: none;
+    outline: none;
+  }
+  .color-input .color-label {
+    font-size: 11.5px;
+    color: var(--text-3);
+    font-weight: 600;
+  }
+
+  /* Integrations */
+  .integration-grid {
+    display: grid;
+    grid-template-columns: 240px;
+    gap: 14px;
+    margin-top: 4px;
+  }
+  .integration-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 18px 16px;
+  }
+  .integration-card .integration-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .stripe-logo {
+    width: 40px; height: 40px;
+    background: #635BFF;
+    color: white;
+    font-weight: 800;
+    font-size: 22px;
+    font-style: italic;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif;
+  }
+  .integration-card .integration-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .integration-card .integration-desc {
+    color: var(--text-2);
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+  .integration-btn {
+    background: #635BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .integration-btn:hover { background: #4F46E5; }
+
+  /* License hero stat */
+  .license-hero {
+    background: white;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: 680px;
+  }
+  .license-hero .lh-body { display: flex; align-items: center; gap: 18px; }
+  .license-hero .lh-num {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1.5px;
+    color: var(--accent);
+  }
+  .license-hero .lh-meta .lbl {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    color: var(--text-3);
+    margin-bottom: 2px;
+  }
+  .license-hero .lh-meta .v { font-size: 15px; font-weight: 700; color: var(--text); }
+  .license-hero .lh-sec {
+    display: flex;
+    gap: 22px;
+    padding-left: 22px;
+    border-left: 1px solid var(--border);
+  }
+  .license-hero .lh-sec .item .lbl {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    color: var(--text-3);
+    margin-bottom: 2px;
+  }
+  .license-hero .lh-sec .item .v {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+
+  /* Admin rental cards - tall product-style (ATS-inspired) */
+  .rental-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 8px;
+  }
+  .rental-card-adm {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .rental-card-adm:hover {
+    box-shadow: 0 12px 28px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
+  }
+  .rental-card-adm .visual {
+    background: linear-gradient(160deg, #1E2754 0%, #2D3A8C 60%, #4F46E5 100%);
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .rental-card-adm .visual::before {
+    content: "";
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+    top: -80px; right: -80px;
+  }
+  .rental-card-adm .visual .device {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 16px 36px rgba(0,0,0,0.45));
+  }
+  .rental-card-adm .visual .device svg {
+    display: block;
+  }
+  .rental-card-adm .visual .tag {
+    position: absolute;
+    top: 16px; left: 16px;
+    background: rgba(255,255,255,0.95);
+    color: var(--accent);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .rental-card-adm .body {
+    padding: 20px 22px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .rental-card-adm .body .name {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+  .rental-card-adm .body .desc {
+    color: var(--text-2);
+    font-size: 12.5px;
+    line-height: 1.45;
+    margin: 4px 0 14px;
+  }
+  .rental-card-adm .body .amt {
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .rental-card-adm .body .amt .per {
+    color: var(--text-3);
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .rental-card-adm .edit-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 10px 18px;
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    transition: all 0.15s;
+    align-self: stretch;
+    text-align: center;
+  }
+  .rental-card-adm .edit-link:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 86vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+  .modal-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-head h3 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .modal-head .close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: var(--text-3);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+  }
+  .modal-head .close:hover { color: var(--text); }
+  .modal-body {
+    padding: 20px 22px;
+  }
+  .modal-row {
+    margin-bottom: 16px;
+  }
+  .modal-row label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .modal-row input[type="text"],
+  .modal-row input[type="number"],
+  .modal-row textarea,
+  .modal-row select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: inherit;
+    outline: none;
+  }
+  .modal-row input:focus, .modal-row textarea:focus, .modal-row select:focus { border-color: var(--accent); }
+  .modal-row .input-prefix {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .modal-row .input-prefix span {
+    padding: 10px 12px;
+    background: var(--bg);
+    color: var(--text-2);
+    font-weight: 600;
+    border-right: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .modal-row .input-prefix input {
+    border: none;
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .bullet-input {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .bullet-input input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+  }
+  .bullet-input .rm {
+    background: white;
+    border: 1px solid var(--border);
+    width: 32px;
+    border-radius: 7px;
+    cursor: pointer;
+    color: var(--text-3);
+    font-size: 15px;
+    font-family: inherit;
+  }
+  .bullet-input .rm:hover { background: #FEE; color: var(--danger); border-color: var(--danger); }
+  .add-bullet {
+    background: none;
+    border: 1px dashed var(--border);
+    width: 100%;
+    padding: 7px;
+    border-radius: 7px;
+    color: var(--text-3);
+    font-size: 12.5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+  }
+  .add-bullet:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); border-style: solid; }
+
+  .modal-foot {
+    padding: 14px 22px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .modal-foot button {
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text);
+    font-family: inherit;
+  }
+  .modal-foot button.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .modal-foot button:hover { background: var(--bg); }
+  .modal-foot button.primary:hover { background: #4F46E5; }
+
+  /* Radio group */
+  .radio-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .radio-group label {
+    display: block;
+    padding: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    transition: all 0.15s;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: 0;
+  }
+  .radio-group label:hover { border-color: var(--accent); }
+  .radio-group input[type="radio"] { display: none; }
+  .radio-group input[type="radio"]:checked + .radio-label,
+  .radio-group label.checked {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .radio-group .ic {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  /* Analytics view */
+  .anl-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .anl-kpi {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .anl-kpi .lbl {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .anl-kpi .v {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .anl-kpi .v small { font-size: 13px; color: var(--text-3); font-weight: 500; }
+
+  .anl-list {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 140px 160px;
+  }
+  .anl-list-head {
+    background: #F8FAFC;
+    color: var(--text-3);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .anl-list-row {
+    display: contents;
+  }
+  .anl-list-row > div {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+  }
+  .anl-list-row:last-child > div { border-bottom: none; }
+  .anl-list-name {
+    color: var(--text);
+    font-weight: 600;
+    gap: 10px;
+  }
+  .anl-list-name .icb {
+    width: 28px; height: 28px;
+    background: var(--accent-light);
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .anl-list-type {
+    color: var(--text-2);
+    font-size: 12.5px;
+  }
+  .anl-list-count {
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+    justify-content: flex-end;
+  }
+</style>
+</head>
+<body>
+  <div class="demo-bar">
+    <div></div>
+    <div class="toggle">
+      View as:
+      <a href="/">Exhibitor</a>
+      <a href="/admin" class="active">Admin Console</a>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="mark">L</div>
+      <div class="name">Leadature</div>
+    </div>
+
+    <div class="sidebar-event">
+      <div class="lbl">Active event</div>
+      <div class="v">TechSummit 2026</div>
+      <div class="dates">Oct 14 – 16  ·  Las Vegas</div>
+    </div>
+
+    <nav>
+      <a onclick="showView('products', this)" class="active"><span class="icon">📦</span>Products &amp; Services</a>
+      <a onclick="showView('exhibitors', this)"><span class="icon">🏢</span>Exhibitors</a>
+      <a onclick="showView('analytics', this)"><span class="icon">📊</span>Analytics</a>
+      <a onclick="showView('settings', this)"><span class="icon">⚙️</span>Settings</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar">SM</div>
+      <div>
+        <div class="name">Sarah Mitchell</div>
+        <div class="role">Event Operations</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- ============== PRODUCTS & SERVICES VIEW ============== -->
+    <div class="view active" id="view-products">
+      <div class="page-head">
+        <div>
+          <h1>Products &amp; Services</h1>
+          <p>Configure the packages and add-ons exhibitors can purchase for this event.</p>
+        </div>
+        <div class="actions">
+          <button class="primary" onclick="openAdd();">+ Add product</button>
+        </div>
+      </div>
+
+      <div class="section-h">
+        <div>
+          <h2>Packages</h2>
+        </div>
+      </div>
+
+      <div class="packages-grid">
+        <div class="pkg-card">
+          <div class="name">Basic</div>
+          <div class="price-row">
+            <div class="price">$349</div>
+            <div class="per">/ event</div>
+          </div>
+          <div class="lic-count">2<span class="lbl">licenses</span></div>
+          <ul class="feat">
+            <li>Standard lead capture</li>
+            <li>CSV export</li>
+            <li>Email support</li>
+          </ul>
+          <div class="edit-row">
+            <a href="#" onclick="openEdit(this); return false;">Edit →</a>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="name">Pro</div>
+          <div class="price-row">
+            <div class="price">$699</div>
+            <div class="per">/ event</div>
+          </div>
+          <div class="lic-count">5<span class="lbl">licenses</span></div>
+          <ul class="feat">
+            <li>Custom qualifiers + dashboards</li>
+            <li>CRM integration (SF, HubSpot)</li>
+            <li>Priority support</li>
+          </ul>
+          <div class="edit-row">
+            <a href="#" onclick="openEdit(this); return false;">Edit →</a>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="name">Enterprise</div>
+          <div class="price-row">
+            <div class="price">$1,499</div>
+            <div class="per">/ event</div>
+          </div>
+          <div class="lic-count">20<span class="lbl">licenses</span></div>
+          <ul class="feat">
+            <li>AI lead enrichment</li>
+            <li>Templates, surveys, branded emails</li>
+            <li>Dedicated CSM</li>
+          </ul>
+          <div class="edit-row">
+            <a href="#" onclick="openEdit(this); return false;">Edit →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-h">
+        <div>
+          <h2>Rentals</h2>
+        </div>
+      </div>
+
+      <div class="rental-cards">
+        <div class="rental-card-adm">
+          <div class="visual">
+            <div class="tag">Smartphone</div>
+            <div class="device">
+              <svg width="140" height="240" viewBox="0 0 140 280" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <clipPath id="iphone-clip">
+                    <rect x="5" y="6" width="130" height="268" rx="18" ry="18"/>
+                  </clipPath>
+                </defs>
+                <!-- Phone body -->
+                <rect x="0" y="0" width="140" height="280" rx="22" ry="22" fill="#1a1a1a"/>
+                <!-- Screen image (app home) -->
+                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128785/app_home_krcr2l.png"
+                       x="5" y="6" width="130" height="268"
+                       preserveAspectRatio="xMidYMid slice"
+                       clip-path="url(#iphone-clip)"/>
+                <!-- Dynamic island overlay -->
+                <rect x="50" y="14" width="40" height="9" rx="4.5" fill="#000"/>
+                <!-- Home indicator overlay -->
+                <rect x="50" y="265" width="40" height="3" rx="1.5" fill="#000" opacity="0.65"/>
+              </svg>
+            </div>
+          </div>
+          <div class="body">
+            <div class="name">iPhone Rental</div>
+            <div class="desc">iPhone 13 pre-installed with scanning software. Picked up at registration.</div>
+            <div class="amt">$120<span class="per">/ device</span></div>
+            <a class="edit-link" href="#" onclick="openEdit(this); return false;">Edit product</a>
+          </div>
+        </div>
+        <div class="rental-card-adm">
+          <div class="visual">
+            <div class="tag">Tablet</div>
+            <div class="device">
+              <svg width="200" height="240" viewBox="0 0 240 290" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <clipPath id="ipad-clip">
+                    <rect x="10" y="12" width="220" height="266" rx="6" ry="6"/>
+                  </clipPath>
+                </defs>
+                <!-- iPad body -->
+                <rect x="0" y="0" width="240" height="290" rx="18" ry="18" fill="#1a1a1a"/>
+                <!-- Screen image (app welcome) -->
+                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128589/app_welcome_ez5yxd.png"
+                       x="10" y="12" width="220" height="266"
+                       preserveAspectRatio="xMidYMid slice"
+                       clip-path="url(#ipad-clip)"/>
+                <!-- Front camera dot -->
+                <circle cx="120" cy="6" r="2" fill="#444"/>
+              </svg>
+            </div>
+          </div>
+          <div class="body">
+            <div class="name">iPad Rental</div>
+            <div class="desc">iPad with scanning software. Ideal for larger booths and stationary check-in.</div>
+            <div class="amt">$150<span class="per">/ device</span></div>
+            <a class="edit-link" href="#" onclick="openEdit(this); return false;">Edit product</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-h">
+        <div>
+          <h2>Add-ons</h2>
+        </div>
+      </div>
+
+      <div class="addon-table-wrap">
+        <table class="addon-table">
+          <thead>
+            <tr>
+              <th style="width: 50%;">Item</th>
+              <th>Type</th>
+              <th>Unit price</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="name-cell"><div class="icon-box">✨</div><div><b>AI Lead Enrichment - 100 records</b><div class="d">Auto-enrich every captured lead with firmographics + intent signals</div></div></div></td>
+              <td>Feature</td>
+              <td class="price">$249</td>
+              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+            </tr>
+            <tr>
+              <td><div class="name-cell"><div class="icon-box">✨</div><div><b>Basic AI Enrichment - 100 records</b><div class="d">Auto-enrich every captured lead with firmographics</div></div></div></td>
+              <td>Feature</td>
+              <td class="price">$95</td>
+              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+            </tr>
+            <tr>
+              <td><div class="name-cell"><div class="icon-box">📋</div><div><b>Custom Questionnaires</b><div class="d">Custom qualifier flow with branching logic</div></div></div></td>
+              <td>Feature</td>
+              <td class="price">$99</td>
+              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+            </tr>
+            <tr>
+              <td><div class="name-cell"><div class="icon-box">📧</div><div><b>Branded Follow-up Emails</b><div class="d">Auto-sent emails branded with exhibitor's logo</div></div></div></td>
+              <td>Feature</td>
+              <td class="price">$149</td>
+              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+            </tr>
+            <tr>
+              <td><div class="name-cell"><div class="icon-box">🔌</div><div><b>CRM Integration</b><div class="d">Sync leads to Salesforce, HubSpot, or any major CRM</div></div></div></td>
+              <td>Feature</td>
+              <td class="price">$199</td>
+              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+            </tr>
+            <tr>
+              <td><div class="name-cell"><div class="icon-box">🔧</div><div><b>API Developer Access</b><div class="d">Build-your-own integration on top of the scanning API</div></div></div></td>
+              <td>Service</td>
+              <td class="price">$450</td>
+              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+            </tr>
+            <tr>
+              <td><div class="name-cell"><div class="icon-box">➕</div><div><b>Additional Profile Questions (5)</b><div class="d">Five extra qualifier questions beyond the included five</div></div></div></td>
+              <td>Feature</td>
+              <td class="price">$45 / block</td>
+              <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============== EXHIBITORS VIEW ============== -->
+    <div class="view" id="view-exhibitors">
+      <div class="page-head">
+        <div>
+          <h1>Exhibitors</h1>
+          <p>All exhibitors invited to purchase lead retrieval for TechSummit 2026.</p>
+        </div>
+        <div class="actions">
+          <button>📤 Export list (CSV)</button>
+          <button class="primary">+ Invite exhibitor</button>
+        </div>
+      </div>
+
+      <div class="summary-row">
+        <div class="stat">
+          <div class="lbl">Total invited</div>
+          <div class="v">15</div>
+        </div>
+        <div class="stat">
+          <div class="lbl">Purchased</div>
+          <div class="v">12 <small>· 80%</small></div>
+        </div>
+        <div class="stat">
+          <div class="lbl">Pending payment</div>
+          <div class="v">1</div>
+        </div>
+        <div class="stat">
+          <div class="lbl">Total revenue</div>
+          <div class="v">$9,427</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search">
+          <span class="icon">🔍</span>
+          <input placeholder="Search by company, booth, or contact…" />
+        </div>
+        <button class="filter-pill">All packages ▾</button>
+        <button class="filter-pill">All statuses ▾</button>
+        <button class="filter-pill">Booth zone ▾</button>
+      </div>
+
+      <div class="exhibitor-table-wrap">
+        <table class="exhibitor-table">
+          <thead>
+            <tr>
+              <th>Company / Booth</th>
+              <th>Primary contact</th>
+              <th>Package</th>
+              <th>Add-ons</th>
+              <th>Devices</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="company"><b>Contoso Inc.</b><div class="booth">Booth #B-247 · West Hall</div></td>
+              <td><b>contoso.exhibitor@contoso.com</b><div style="color:var(--text-3);font-size:11.5px;">Sarah Chen · VP Marketing</div></td>
+              <td><span class="pill pro">Pro</span></td>
+              <td class="addons">iPhone rental ×3</td>
+              <td>5 + 3 rented</td>
+              <td class="total">$879</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="/">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Acme Corp.</b><div class="booth">Booth #B-312 · West Hall</div></td>
+              <td><b>j.peterson@acme.com</b><div style="color:var(--text-3);font-size:11.5px;">James Peterson · CMO</div></td>
+              <td><span class="pill ent">Enterprise</span></td>
+              <td class="addons">AI enrichment, branded emails</td>
+              <td>Unlimited</td>
+              <td class="total">$1,897</td>
+              <td><span class="status pending">Pending</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Initech</b><div class="booth">Booth #C-104 · East Hall</div></td>
+              <td><b>mike@initech.com</b><div style="color:var(--text-3);font-size:11.5px;">Mike Bolton · Sales</div></td>
+              <td><span class="pill basic">Basic</span></td>
+              <td class="addons">—</td>
+              <td>2</td>
+              <td class="total">$349</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Vandelay Industries</b><div class="booth">Booth #A-501 · Main Hall</div></td>
+              <td><b>art@vandelay.com</b><div style="color:var(--text-3);font-size:11.5px;">Art Vandelay · Founder</div></td>
+              <td><span class="pill ent">Enterprise</span></td>
+              <td class="addons">AI enrichment, surveys, iPad ×2</td>
+              <td>Unlimited + 2 iPads</td>
+              <td class="total">$1,748</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Soylent Inc.</b><div class="booth">Booth #B-088 · West Hall</div></td>
+              <td><b>green@soylent.com</b><div style="color:var(--text-3);font-size:11.5px;">Pat Green · Director</div></td>
+              <td>—</td>
+              <td class="addons">—</td>
+              <td>—</td>
+              <td class="total" style="color:var(--text-3);">—</td>
+              <td><span class="status trial">Cart abandoned</span></td>
+              <td class="actions"><a href="#">Follow up →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Globex Ltd.</b><div class="booth">Booth #C-220 · East Hall</div></td>
+              <td><b>h.scott@globex.com</b><div style="color:var(--text-3);font-size:11.5px;">Hank Scott · Operations</div></td>
+              <td>—</td>
+              <td class="addons">—</td>
+              <td>—</td>
+              <td class="total" style="color:var(--text-3);">—</td>
+              <td><span class="status trial">Browsed (3×)</span></td>
+              <td class="actions"><a href="#">Follow up →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Fabrikam Industries</b><div class="booth">Booth #D-410 · Main Hall</div></td>
+              <td><b>r.carter@fabrikam.com</b><div style="color:var(--text-3);font-size:11.5px;">Robert Carter · Director, Platform Eng.</div></td>
+              <td><span class="pill pro">Pro</span></td>
+              <td class="addons">Questionnaires, branded emails</td>
+              <td>5</td>
+              <td class="total">$947</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Northwind Traders</b><div class="booth">Booth #D-415 · Main Hall</div></td>
+              <td><b>d.voss@northwind.com</b><div style="color:var(--text-3);font-size:11.5px;">Diana Voss · Marketing Manager</div></td>
+              <td><span class="pill basic">Basic</span></td>
+              <td class="addons">iPhone rental ×2</td>
+              <td>2 + 2 rented</td>
+              <td class="total">$589</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Litware Inc.</b><div class="booth">Booth #D-420 · Main Hall</div></td>
+              <td><b>j.park@litware.com</b><div style="color:var(--text-3);font-size:11.5px;">Joanne Park · CEO</div></td>
+              <td><span class="pill pro">Pro</span></td>
+              <td class="addons">CRM integration</td>
+              <td>5</td>
+              <td class="total">$898</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Adatum Corporation</b><div class="booth">Booth #B-156 · West Hall</div></td>
+              <td><b>info@adatum.com</b><div style="color:var(--text-3);font-size:11.5px;">—</div></td>
+              <td><span class="pill basic">Basic</span></td>
+              <td class="addons">—</td>
+              <td>2</td>
+              <td class="total">$349</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Adventure Works</b><div class="booth">Booth #C-305 · East Hall</div></td>
+              <td><b>mike@adventureworks.com</b><div style="color:var(--text-3);font-size:11.5px;">Michael Reed · Founder</div></td>
+              <td><span class="pill pro">Pro</span></td>
+              <td class="addons">iPad rental ×1</td>
+              <td>5 + 1 rented</td>
+              <td class="total">$849</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Trey Research</b><div class="booth">Booth #A-203 · Main Hall</div></td>
+              <td><b>d.cohen@treyresearch.com</b><div style="color:var(--text-3);font-size:11.5px;">David Cohen · Procurement Lead</div></td>
+              <td><span class="pill pro">Pro</span></td>
+              <td class="addons">—</td>
+              <td>5</td>
+              <td class="total">$699</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Coho Vineyard</b><div class="booth">Booth #B-340 · West Hall</div></td>
+              <td><b>l.park@cohovineyard.com</b><div style="color:var(--text-3);font-size:11.5px;">Linda Park · Director, Operations</div></td>
+              <td><span class="pill basic">Basic</span></td>
+              <td class="addons">—</td>
+              <td>2</td>
+              <td class="total">$349</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Wingtip Solutions</b><div class="booth">Booth #A-118 · Main Hall</div></td>
+              <td><b>s.hayes@wingtip.com</b><div style="color:var(--text-3);font-size:11.5px;">Sarah Hayes · VP, Procurement</div></td>
+              <td><span class="pill pro">Pro</span></td>
+              <td class="addons">iPhone rental ×2</td>
+              <td>5 + 2 rented</td>
+              <td class="total">$939</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+            <tr>
+              <td class="company"><b>Proseware Inc.</b><div class="booth">Booth #D-510 · East Hall</div></td>
+              <td><b>r.patel@proseware.com</b><div style="color:var(--text-3);font-size:11.5px;">Raj Patel · Senior Engineer</div></td>
+              <td><span class="pill ent">Enterprise</span></td>
+              <td class="addons">AI enrichment</td>
+              <td>Unlimited</td>
+              <td class="total">$1,499</td>
+              <td><span class="status paid">Paid</span></td>
+              <td class="actions"><a href="#">View →</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="table-footer">
+          <div>Showing all 15 exhibitors</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== SETTINGS VIEW ============== -->
+    <div class="view" id="view-settings">
+      <div class="page-head">
+        <div>
+          <h1>Settings</h1>
+          <p>Event details and per-organizer branding for the storefront.</p>
+        </div>
+        <div class="actions">
+          <button class="primary">Save changes</button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Event details</h3>
+        <div class="setting-row">
+          <label>Event name</label>
+          <input type="text" value="TechSummit 2026" />
+        </div>
+        <div class="setting-row">
+          <label>Event dates</label>
+          <input type="text" value="Oct 14 – 16, 2026" />
+        </div>
+        <div class="setting-row">
+          <label>Location</label>
+          <input type="text" value="Las Vegas Convention Center" />
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h3>Branding package</h3>
+        <p class="settings-desc">Upload the organizer's branding kit. Applied automatically to the exhibitor storefront and all confirmation emails.</p>
+
+        <div class="setting-row">
+          <label>Logo</label>
+          <div class="upload-box">
+            <div class="upload-preview"><div class="logo-thumb">TS</div></div>
+            <div class="upload-meta">
+              <div class="upload-name">techsummit-logo.svg</div>
+              <div class="upload-info">SVG · 4.2 KB · uploaded May 28</div>
+            </div>
+            <button class="btn-secondary">Replace</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label>Brand colors</label>
+          <div class="colors-row">
+            <div class="color-input">
+              <div class="swatch" style="background: #0F766E;"></div>
+              <input type="text" value="#0F766E" />
+              <span class="color-label">Primary</span>
+            </div>
+            <div class="color-input">
+              <div class="swatch" style="background: #115E59;"></div>
+              <input type="text" value="#115E59" />
+              <span class="color-label">Dark</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label>Branding kit (.zip)</label>
+          <div class="upload-box">
+            <div class="upload-icon">📦</div>
+            <div class="upload-meta">
+              <div class="upload-name">Drop branding kit here or click to upload</div>
+              <div class="upload-info">Logo, favicon, fonts, color tokens · max 10 MB</div>
+            </div>
+            <button class="btn-secondary">Choose file</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label>Footer copy</label>
+          <input type="text" value="Powered by TechSummit  ·  Lead retrieval by Leadature" />
+        </div>
+      </div>
+
+      <div class="settings-card" id="anchor-integrations">
+        <h3>Integrations</h3>
+        <p class="settings-desc">Connect external services to power payments, CRM sync, and lead delivery.</p>
+
+        <div class="integration-grid">
+          <div class="integration-card">
+            <div class="integration-head">
+              <div class="stripe-logo">S</div>
+              <div class="integration-name">Stripe</div>
+            </div>
+            <p class="integration-desc">Online payment infrastructure for collecting exhibitor purchases, processing refunds, and routing revenue splits.</p>
+            <button class="integration-btn">🔗 Connect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== ANALYTICS VIEW ============== -->
+    <div class="view" id="view-analytics">
+      <div class="page-head">
+        <div>
+          <h1>Analytics</h1>
+          <p>Sales performance, conversion, and product-level breakdown for this event.</p>
+        </div>
+        <div class="actions">
+          <button>📤 Export report</button>
+        </div>
+      </div>
+
+      <div class="anl-kpis">
+        <div class="anl-kpi">
+          <div class="lbl">Total revenue</div>
+          <div class="v">$9,427</div>
+        </div>
+        <div class="anl-kpi">
+          <div class="lbl">Exhibitors purchased</div>
+          <div class="v">12 <small>/ 15</small></div>
+        </div>
+        <div class="anl-kpi">
+          <div class="lbl">Conversion</div>
+          <div class="v">80%</div>
+        </div>
+        <div class="anl-kpi">
+          <div class="lbl">Avg order value</div>
+          <div class="v">$786</div>
+        </div>
+      </div>
+
+      <div class="anl-list">
+        <div class="anl-list-head">Product</div>
+        <div class="anl-list-head">Type</div>
+        <div class="anl-list-head" style="text-align:right;">Sold / Attached</div>
+
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">📦</span>Basic</div><div class="anl-list-type">Package</div><div class="anl-list-count">3</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">📦</span>Pro</div><div class="anl-list-type">Package</div><div class="anl-list-count">6</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">📦</span>Enterprise</div><div class="anl-list-type">Package</div><div class="anl-list-count">3</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">📱</span>iPhone Rental</div><div class="anl-list-type">Rental</div><div class="anl-list-count">7</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">📱</span>iPad Rental</div><div class="anl-list-type">Rental</div><div class="anl-list-count">2</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">✨</span>AI Lead Enrichment</div><div class="anl-list-type">Add-on</div><div class="anl-list-count">3</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">📋</span>Custom Questionnaires</div><div class="anl-list-type">Add-on</div><div class="anl-list-count">4</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">📧</span>Branded Follow-up Emails</div><div class="anl-list-type">Add-on</div><div class="anl-list-count">2</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">🔌</span>CRM Integration</div><div class="anl-list-type">Add-on</div><div class="anl-list-count">2</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">🔧</span>API Developer Access</div><div class="anl-list-type">Add-on</div><div class="anl-list-count">1</div></div>
+        <div class="anl-list-row"><div class="anl-list-name"><span class="icb">➕</span>Additional Profile Questions</div><div class="anl-list-type">Add-on</div><div class="anl-list-count">3</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== EDIT MODAL ============== -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="editTitle">Edit product</h3>
+        <button class="close" onclick="closeModal('editModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-row">
+          <label>Name</label>
+          <input type="text" id="editName" />
+        </div>
+        <div class="modal-row">
+          <label>Price</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input type="number" id="editPrice" />
+          </div>
+        </div>
+        <div class="modal-row" id="editLicensesRow">
+          <label>Number of licenses</label>
+          <input type="text" id="editLicenses" placeholder="e.g. 5 or Unlimited" />
+        </div>
+        <div class="modal-row">
+          <label>Bullet points / features</label>
+          <div id="editBullets"></div>
+          <button class="add-bullet" onclick="addBullet()">+ Add bullet</button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button onclick="closeModal('editModal')">Cancel</button>
+        <button class="primary" onclick="saveEdit()">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== ADD PRODUCT MODAL ============== -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Add new product</h3>
+        <button class="close" onclick="closeModal('addModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-row">
+          <label>1. What type of product?</label>
+          <div class="radio-group">
+            <label class="radio-opt checked" onclick="pickType(this,'package')">
+              <span class="ic">📦</span>Package
+            </label>
+            <label class="radio-opt" onclick="pickType(this,'rental')">
+              <span class="ic">📱</span>Rental
+            </label>
+            <label class="radio-opt" onclick="pickType(this,'addon')">
+              <span class="ic">✨</span>Add-on
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-row">
+          <label>2. Product name</label>
+          <input type="text" id="addName" placeholder="e.g. Pro Plus" />
+        </div>
+
+        <div class="modal-row">
+          <label>3. Price</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input type="number" id="addPrice" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="modal-row" id="addLicensesRow">
+          <label>4. Number of licenses</label>
+          <input type="text" id="addLicenses" placeholder="e.g. 8 or Unlimited" />
+        </div>
+
+        <div class="modal-row">
+          <label>5. Short description</label>
+          <input type="text" id="addDesc" placeholder="One-line description shown to exhibitors" />
+        </div>
+
+        <div class="modal-row" id="addDisplayRow">
+          <label>6. How should this be displayed?</label>
+          <div class="radio-group" style="grid-template-columns: 1fr 1fr;">
+            <label class="radio-opt checked" onclick="pickDisplay(this,'card')">
+              <span class="ic">▢</span>As a card
+            </label>
+            <label class="radio-opt" onclick="pickDisplay(this,'inline')">
+              <span class="ic">≡</span>Inline (table row)
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button onclick="closeModal('addModal')">Cancel</button>
+        <button class="primary" onclick="saveAdd()">Create product</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showView(view, el) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + view).classList.add('active');
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    let currentEditCard = null;
+
+    function openEdit(linkEl) {
+      const card = linkEl.closest('.pkg-card, .rental-card-adm, tr');
+      currentEditCard = card;
+
+      let name = '', price = '', licenses = null, bullets = [];
+
+      if (card.classList.contains('pkg-card')) {
+        name = card.querySelector('.name').textContent.trim();
+        price = card.querySelector('.price').textContent.replace(/[^0-9.]/g, '');
+        const licDiv = card.querySelector('.lic-count');
+        if (licDiv && licDiv.firstChild) {
+          licenses = licDiv.firstChild.textContent.trim();
+        }
+        bullets = Array.from(card.querySelectorAll('.feat li')).map(li => li.textContent.trim());
+      } else if (card.classList.contains('rental-card-adm')) {
+        name = card.querySelector('.body .name').textContent.trim();
+        const amt = card.querySelector('.amt');
+        if (amt && amt.firstChild) {
+          price = amt.firstChild.textContent.replace(/[^0-9.]/g, '');
+        }
+        const desc = card.querySelector('.body .desc');
+        if (desc) bullets = [desc.textContent.trim()];
+      } else if (card.tagName === 'TR') {
+        name = card.querySelector('.name-cell b').textContent.trim();
+        const priceCell = card.querySelector('.price');
+        if (priceCell) price = priceCell.textContent.replace(/[^0-9.]/g, '');
+        const desc = card.querySelector('.name-cell .d');
+        if (desc) bullets = [desc.textContent.trim()];
+      }
+
+      document.getElementById('editTitle').textContent = 'Edit ' + name;
+      document.getElementById('editName').value = name;
+      document.getElementById('editPrice').value = price;
+
+      const licInput = document.getElementById('editLicenses');
+      const licRow = document.getElementById('editLicensesRow');
+      if (licenses === null) {
+        licRow.style.display = 'none';
+      } else {
+        licRow.style.display = 'block';
+        licInput.value = licenses;
+      }
+
+      renderBullets(bullets);
+      document.getElementById('editModal').classList.add('open');
+    }
+
+    function saveEdit() {
+      if (!currentEditCard) return closeModal('editModal');
+
+      const newName = document.getElementById('editName').value.trim();
+      const newPrice = document.getElementById('editPrice').value.trim();
+      const newLicenses = document.getElementById('editLicenses').value.trim();
+      const bullets = Array.from(document.querySelectorAll('#editBullets .bullet-input input'))
+        .map(i => i.value.trim())
+        .filter(b => b);
+
+      const card = currentEditCard;
+
+      if (card.classList.contains('pkg-card')) {
+        card.querySelector('.name').textContent = newName;
+        card.querySelector('.price').textContent = '$' + newPrice;
+        const licDiv = card.querySelector('.lic-count');
+        if (licDiv && newLicenses) {
+          licDiv.innerHTML = newLicenses + '<span class="lbl">licenses</span>';
+        }
+        const ul = card.querySelector('.feat');
+        ul.innerHTML = '';
+        bullets.forEach(b => {
+          const li = document.createElement('li');
+          li.textContent = b;
+          ul.appendChild(li);
+        });
+      } else if (card.classList.contains('rental-card-adm')) {
+        card.querySelector('.body .name').textContent = newName;
+        const amt = card.querySelector('.amt');
+        if (amt && amt.firstChild) {
+          amt.firstChild.nodeValue = '$' + newPrice;
+        }
+        if (bullets[0]) {
+          const desc = card.querySelector('.body .desc');
+          if (desc) desc.textContent = bullets[0];
+        }
+      } else if (card.tagName === 'TR') {
+        card.querySelector('.name-cell b').textContent = newName;
+        const priceCell = card.querySelector('.price');
+        if (priceCell) {
+          const currentText = priceCell.textContent;
+          const suffix = currentText.replace(/^\$[\d.,]+\s*/, '');
+          priceCell.textContent = '$' + newPrice + (suffix ? ' ' + suffix : '');
+        }
+        if (bullets[0]) {
+          const desc = card.querySelector('.name-cell .d');
+          if (desc) desc.textContent = bullets[0];
+        }
+      }
+
+      closeModal('editModal');
+      currentEditCard = null;
+
+      // brief success indicator
+      const flash = document.createElement('div');
+      flash.textContent = '✓ Saved';
+      flash.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#10B981;color:white;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;font-family:Inter,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:2000;animation:fadeOut 2s forwards;';
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 2000);
+    }
+
+    function renderBullets(bullets) {
+      const container = document.getElementById('editBullets');
+      container.innerHTML = '';
+      bullets.forEach(b => container.appendChild(makeBulletRow(b)));
+    }
+
+    function makeBulletRow(value) {
+      const row = document.createElement('div');
+      row.className = 'bullet-input';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = value;
+      const rm = document.createElement('button');
+      rm.className = 'rm';
+      rm.textContent = '×';
+      rm.onclick = function() { row.remove(); };
+      row.appendChild(input);
+      row.appendChild(rm);
+      return row;
+    }
+
+    function addBullet() {
+      document.getElementById('editBullets').appendChild(makeBulletRow(''));
+    }
+
+    let currentAddType = 'package';
+    let currentAddDisplay = 'card';
+
+    function openAdd() {
+      // reset radio selections
+      document.querySelectorAll('#addModal .radio-opt').forEach(o => o.classList.remove('checked'));
+      document.querySelectorAll('#addModal .radio-group').forEach(g => {
+        const first = g.querySelector('.radio-opt');
+        if (first) first.classList.add('checked');
+      });
+      // reset state to defaults
+      currentAddType = 'package';
+      currentAddDisplay = 'card';
+      // reset fields
+      ['addName','addPrice','addLicenses','addDesc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('addLicensesRow').style.display = 'block';
+      document.getElementById('addModal').classList.add('open');
+    }
+
+    function pickType(el, type) {
+      currentAddType = type;
+      const group = el.parentNode;
+      group.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('checked'));
+      el.classList.add('checked');
+      // licenses field only relevant for package/rental
+      const licRow = document.getElementById('addLicensesRow');
+      licRow.style.display = (type === 'addon') ? 'none' : 'block';
+    }
+
+    function pickDisplay(el, mode) {
+      currentAddDisplay = mode;
+      const group = el.parentNode;
+      group.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('checked'));
+      el.classList.add('checked');
+    }
+
+    function saveAdd() {
+      const name = (document.getElementById('addName').value || 'Untitled').trim();
+      const price = (document.getElementById('addPrice').value || '0').trim();
+      const licenses = (document.getElementById('addLicenses').value || '').trim();
+      const desc = (document.getElementById('addDesc').value || '').trim();
+
+      const typeLabels = { package: 'Package', rental: 'Rental', addon: 'Feature' };
+      const typeIcons  = { package: '📦', rental: '📱', addon: '✨' };
+      const priceSuffix = currentAddType === 'rental' ? ' / device' : '';
+
+      // INLINE display — always goes to the add-ons table regardless of type
+      if (currentAddDisplay === 'inline') {
+        const tbody = document.querySelector('.addon-table tbody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><div class="name-cell"><div class="icon-box">${typeIcons[currentAddType]}</div><div><b>${escapeHtml(name)}</b><div class="d">${escapeHtml(desc || 'New product')}</div></div></div></td>
+          <td>${typeLabels[currentAddType]}</td>
+          <td class="price">$${escapeHtml(price)}${priceSuffix}</td>
+          <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+        `;
+        tbody.appendChild(row);
+      } else {
+        // CARD display — depends on type
+        if (currentAddType === 'package') {
+          const grid = document.querySelector('.packages-grid');
+          const card = document.createElement('div');
+          card.className = 'pkg-card';
+          card.innerHTML = `
+            <div class="name">${escapeHtml(name)}</div>
+            <div class="price-row">
+              <div class="price">$${escapeHtml(price)}</div>
+              <div class="per">/ event</div>
+            </div>
+            <div class="lic-count">${escapeHtml(licenses || '1')}<span class="lbl">licenses</span></div>
+            <ul class="feat">
+              ${desc ? '<li>' + escapeHtml(desc) + '</li>' : ''}
+            </ul>
+            <div class="edit-row">
+              <a href="#" onclick="openEdit(this); return false;">Edit →</a>
+            </div>
+          `;
+          grid.appendChild(card);
+        } else if (currentAddType === 'rental') {
+          const grid = document.querySelector('.rental-cards');
+          const card = document.createElement('div');
+          card.className = 'rental-card-adm';
+          card.innerHTML = `
+            <div class="visual">
+              <div class="tag">Hardware</div>
+              <div class="device" style="font-size:90px;">📦</div>
+            </div>
+            <div class="body">
+              <div class="name">${escapeHtml(name)}</div>
+              <div class="desc">${escapeHtml(desc || 'New rental item.')}</div>
+              <div class="amt">$${escapeHtml(price)}<span class="per">/ device</span></div>
+              <a class="edit-link" href="#" onclick="openEdit(this); return false;">Edit product</a>
+            </div>
+          `;
+          grid.appendChild(card);
+        } else if (currentAddType === 'addon') {
+          // Add-on + Card — fall back to inline since there's no add-on cards section yet
+          const tbody = document.querySelector('.addon-table tbody');
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><div class="name-cell"><div class="icon-box">✨</div><div><b>${escapeHtml(name)}</b><div class="d">${escapeHtml(desc || 'New add-on')}</div></div></div></td>
+            <td>Feature</td>
+            <td class="price">$${escapeHtml(price)}</td>
+            <td class="actions-cell"><a href="#" onclick="openEdit(this); return false;">Edit</a></td>
+          `;
+          tbody.appendChild(row);
+        }
+      }
+
+      closeModal('addModal');
+
+      // success toast
+      const flash = document.createElement('div');
+      flash.textContent = '✓ Product added';
+      flash.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#10B981;color:white;padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;font-family:Inter,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:2000;animation:fadeOut 2s forwards;';
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 2000);
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+      o.addEventListener('click', e => {
+        if (e.target === o) o.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
