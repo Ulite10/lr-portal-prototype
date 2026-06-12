@@ -5,23 +5,15 @@
 <title>TechSummit 2026 - Lead Retrieval Portal</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/components.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
     --brand: #0F766E;
     --brand-dark: #115E59;
     --brand-light: #5EEAD4;
-    --bg: #F8FAFC;
-    --surface: #FFFFFF;
-    --border: #E2E8F0;
-    --text: #0F172A;
-    --text-2: #475569;
-    --text-3: #94A3B8;
     --accent: #2563EB;
-    --success: #10B981;
-    --warning: #F59E0B;
-    --danger: #EF4444;
+    --demo-toggle-active: #2563EB;
   }
 
   body {
@@ -29,26 +21,6 @@
     background: var(--bg);
     color: var(--text);
     line-height: 1.5;
-  }
-
-  .demo-bar {
-    background: #0F172A;
-    color: white;
-    padding: 8px 24px;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .demo-bar .label { opacity: 0.7; margin-right: 6px; }
-  .demo-bar a { color: #93C5FD; text-decoration: none; font-weight: 500; }
-  .demo-bar .toggle { display: flex; gap: 8px; align-items: center; }
-  .demo-bar .toggle a {
-    padding: 4px 10px; border-radius: 6px;
-    background: rgba(255,255,255,0.1);
-  }
-  .demo-bar .toggle a.active {
-    background: #2563EB; color: white;
   }
 
   .header {
@@ -143,21 +115,22 @@
     margin: 0 auto;
     padding: 28px 24px 60px;
   }
-  .view { display: none; }
-  .view.active { display: block; }
-
   /* Current package card */
   .current-card {
     background: linear-gradient(135deg, #0F766E, #115E59);
     color: white;
     border-radius: 14px;
-    padding: 20px 24px;
+    padding: 22px 26px;
     margin-bottom: 28px;
+    max-width: 760px;
+  }
+  .current-card .cc-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    max-width: 680px;
+    align-items: flex-start;
+    gap: 24px;
   }
+  .current-card .cc-top-right { text-align: right; }
   .current-card .lbl {
     font-size: 11px;
     letter-spacing: 1px;
@@ -167,28 +140,69 @@
     margin-bottom: 6px;
   }
   .current-card .pkg-name {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .current-card .cc-order {
+    font-size: 11.5px;
+    opacity: 0.75;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .current-card .cc-price {
     font-size: 26px;
     font-weight: 800;
     letter-spacing: -0.5px;
-    margin-bottom: 4px;
+    line-height: 1;
   }
-  .current-card .meta {
-    font-size: 13px;
-    opacity: 0.85;
-  }
-  .current-card .price {
-    font-size: 30px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    text-align: right;
-  }
-  .current-card .price small {
-    display: block;
-    font-size: 12.5px;
+  .current-card .cc-paid-date {
+    font-size: 11.5px;
+    opacity: 0.75;
+    margin-top: 4px;
     font-weight: 500;
-    opacity: 0.7;
-    margin-top: 2px;
   }
+  .current-card .cc-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.18);
+    margin: 16px 0 14px;
+  }
+  .current-card .cc-items-lbl {
+    font-size: 10.5px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  .current-card .cc-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .current-card .cc-items-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .current-card .cc-ic {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    background: rgba(255,255,255,0.16);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .current-card .cc-text { flex: 1; }
+  .current-card .cc-text b { font-weight: 700; }
   .status-pill {
     display: inline-block;
     background: rgba(255,255,255,0.18);
@@ -198,29 +212,10 @@
     font-weight: 700;
     margin-left: 8px;
     letter-spacing: 0.4px;
+    vertical-align: middle;
   }
   .status-pill.paid::before {
     content: "✓ ";
-  }
-  .current-card .license-block {
-    text-align: center;
-    padding: 0 24px;
-    border-left: 1px solid rgba(255,255,255,0.2);
-    border-right: 1px solid rgba(255,255,255,0.2);
-  }
-  .current-card .license-num {
-    font-size: 44px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -1.5px;
-  }
-  .current-card .license-lbl {
-    font-size: 10.5px;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    font-weight: 600;
-    opacity: 0.75;
-    margin-top: 4px;
   }
 
   /* Rentals - tall product cards matching admin */
@@ -1140,18 +1135,24 @@
     <!-- =========== ORDER VIEW =========== -->
     <div class="view active" id="view-order">
       <div class="current-card">
-        <div>
-          <div class="lbl">Your current package</div>
-          <div class="pkg-name">Pro <span class="status-pill paid">Paid · Active</span></div>
-          <div class="meta">3 iPhone rentals · Order #LR-2026-00847</div>
+        <div class="cc-top">
+          <div>
+            <div class="lbl">Your current package</div>
+            <div class="pkg-name">Pro <span class="status-pill paid">Paid · Active</span></div>
+          </div>
+          <div class="cc-top-right">
+            <div class="cc-order">Order #LR-2026-00847</div>
+            <div class="cc-price">$879</div>
+            <div class="cc-paid-date">Paid May 18, 2026</div>
+          </div>
         </div>
-        <div class="license-block">
-          <div class="license-num">5</div>
-          <div class="license-lbl">active licenses</div>
-        </div>
-        <div class="price">
-          $879
-          <small>Paid May 18, 2026</small>
+        <div class="cc-divider"></div>
+        <div class="cc-items">
+          <div class="cc-items-lbl">Your purchase</div>
+          <ul class="cc-items-list">
+            <li><span class="cc-ic">📦</span><span class="cc-text"><b>Pro package</b> · 5 device licenses included</span></li>
+            <li><span class="cc-ic">📱</span><span class="cc-text"><b>iPhone Rental × 3</b> · pre-configured devices, picked up at registration</span></li>
+          </ul>
         </div>
       </div>
 
@@ -1162,43 +1163,7 @@
         </div>
       </div>
 
-      <div class="upgrade-grid">
-        <div class="pkg-opt">
-          <div class="name">Basic</div>
-          <div class="price">$349 <small>/ event</small></div>
-          <div class="lic-count">2<span class="lbl">licenses</span></div>
-          <ul>
-            <li>Standard lead capture</li>
-            <li>CSV export</li>
-            <li>Email support</li>
-          </ul>
-          <button class="opt-btn">Downgrade</button>
-        </div>
-
-        <div class="pkg-opt current">
-          <div class="name">Pro</div>
-          <div class="price">$699 <small>/ event</small></div>
-          <div class="lic-count">5<span class="lbl">licenses</span></div>
-          <ul>
-            <li>Custom qualifiers + dashboards</li>
-            <li>CRM integration (SF, HubSpot)</li>
-            <li>Priority support</li>
-          </ul>
-          <button class="opt-btn">Current plan</button>
-        </div>
-
-        <div class="pkg-opt">
-          <div class="name">Enterprise</div>
-          <div class="price">$1,499 <small>/ event</small></div>
-          <div class="lic-count">20<span class="lbl">licenses</span></div>
-          <ul>
-            <li>AI lead enrichment</li>
-            <li>Templates, surveys, email campaigns</li>
-            <li>Dedicated CSM</li>
-          </ul>
-          <button class="opt-btn">Upgrade to Enterprise</button>
-        </div>
-      </div>
+      <div class="upgrade-grid" id="upgradeGrid"></div>
 
       <div class="sec-h">
         <div>
@@ -1207,71 +1172,7 @@
         </div>
       </div>
 
-      <div class="rentals-grid">
-        <div class="rental-card" data-price="120" data-name="iPhone rental">
-          <div class="visual">
-            <div class="tag">Smartphone</div>
-            <div class="device">
-              <svg width="140" height="240" viewBox="0 0 140 280" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <clipPath id="iphone-clip-ex">
-                    <rect x="5" y="6" width="130" height="268" rx="18" ry="18"/>
-                  </clipPath>
-                </defs>
-                <rect x="0" y="0" width="140" height="280" rx="22" ry="22" fill="#1a1a1a"/>
-                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128785/app_home_krcr2l.png"
-                       x="5" y="6" width="130" height="268"
-                       preserveAspectRatio="xMidYMid slice"
-                       clip-path="url(#iphone-clip-ex)"/>
-                <rect x="50" y="14" width="40" height="9" rx="4.5" fill="#000"/>
-                <rect x="50" y="265" width="40" height="3" rx="1.5" fill="#000" opacity="0.65"/>
-              </svg>
-            </div>
-          </div>
-          <div class="body">
-            <div class="name">iPhone Rental</div>
-            <div class="desc">iPhone 13 pre-installed with scanning software. Picked up at registration.</div>
-            <div class="amt">$120<span class="per">/ device</span></div>
-            <div class="qty-control">
-              <span class="qty-lbl">Quantity</span>
-              <button onclick="adj(this, -1)">−</button>
-              <span class="num">3</span>
-              <button onclick="adj(this, 1)">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="rental-card" data-price="150" data-name="iPad rental">
-          <div class="visual">
-            <div class="tag">Tablet</div>
-            <div class="device">
-              <svg width="200" height="240" viewBox="0 0 240 290" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <clipPath id="ipad-clip-ex">
-                    <rect x="10" y="12" width="220" height="266" rx="6" ry="6"/>
-                  </clipPath>
-                </defs>
-                <rect x="0" y="0" width="240" height="290" rx="18" ry="18" fill="#1a1a1a"/>
-                <image href="https://res.cloudinary.com/demn0xk8w/image/upload/v1781128589/app_welcome_ez5yxd.png"
-                       x="10" y="12" width="220" height="266"
-                       preserveAspectRatio="xMidYMid slice"
-                       clip-path="url(#ipad-clip-ex)"/>
-                <circle cx="120" cy="6" r="2" fill="#444"/>
-              </svg>
-            </div>
-          </div>
-          <div class="body">
-            <div class="name">iPad Rental</div>
-            <div class="desc">iPad with scanning software. Ideal for larger booths and stationary check-in.</div>
-            <div class="amt">$150<span class="per">/ device</span></div>
-            <div class="qty-control">
-              <span class="qty-lbl">Quantity</span>
-              <button onclick="adj(this, -1)">−</button>
-              <span class="num">0</span>
-              <button onclick="adj(this, 1)">+</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="rentals-grid" id="rentalsGrid"></div>
 
       <!-- ADD-ONS SECTION (merged from old Add-ons tab) -->
       <div class="sec-h">
@@ -1281,118 +1182,13 @@
         </div>
       </div>
 
-      <div class="addons-form">
+      <div class="addons-form" id="addonsForm">
         <div class="addon-row head">
           <div></div>
           <div>Item</div>
           <div>Unit price</div>
           <div style="text-align: center;">Quantity</div>
           <div style="text-align: right;">Subtotal</div>
-        </div>
-
-        <div class="addon-row" data-price="249" data-name="AI Lead Enrichment - 100 records">
-          <div class="ic">✨</div>
-          <div class="info">
-            <b>AI Lead Enrichment - 100 records</b>
-            <p>Auto-enrich up to 100 captured leads with firmographics, intent signals, recommended next action, and CRM-ready contact details.</p>
-          </div>
-          <div class="price-col">$249<span class="per"> flat</span></div>
-          <div class="qty">
-            <button onclick="adj(this, -1)">−</button>
-            <input type="text" value="0" />
-            <button onclick="adj(this, 1)">+</button>
-          </div>
-          <div class="total-col"><span class="zero">$0</span></div>
-        </div>
-
-        <div class="addon-row" data-price="95" data-name="Basic AI Enrichment - 100 records">
-          <div class="ic">✨</div>
-          <div class="info">
-            <b>Basic AI Enrichment - 100 records</b>
-            <p>Auto-enrich up to 100 captured leads with firmographic data (company size, industry, location, headcount).</p>
-          </div>
-          <div class="price-col">$95<span class="per"> flat</span></div>
-          <div class="qty">
-            <button onclick="adj(this, -1)">−</button>
-            <input type="text" value="0" />
-            <button onclick="adj(this, 1)">+</button>
-          </div>
-          <div class="total-col"><span class="zero">$0</span></div>
-        </div>
-
-        <div class="addon-row" data-price="99" data-name="Custom Questionnaires">
-          <div class="ic">📋</div>
-          <div class="info">
-            <b>Custom Questionnaires</b>
-            <p>Build your own lead qualifier flow with branching logic, required-field validation, and multi-language support. Built in our self-service form designer.</p>
-          </div>
-          <div class="price-col">$99<span class="per"> flat</span></div>
-          <div class="qty">
-            <button onclick="adj(this, -1)">−</button>
-            <input type="text" value="0" />
-            <button onclick="adj(this, 1)">+</button>
-          </div>
-          <div class="total-col"><span class="zero">$0</span></div>
-        </div>
-
-        <div class="addon-row" data-price="149" data-name="Email campaign">
-          <div class="ic">📧</div>
-          <div class="info">
-            <b>Email campaign</b>
-            <p>Send branded pre-show invitations or post-event follow-ups, auto-personalized for each lead and scheduled to your timeline.</p>
-          </div>
-          <div class="price-col">$149<span class="per"> flat</span></div>
-          <div class="qty">
-            <button onclick="adj(this, -1)">−</button>
-            <input type="text" value="0" />
-            <button onclick="adj(this, 1)">+</button>
-          </div>
-          <div class="total-col"><span class="zero">$0</span></div>
-        </div>
-
-        <div class="addon-row" data-price="199" data-name="CRM Integration">
-          <div class="ic">🔌</div>
-          <div class="info">
-            <b>CRM Integration</b>
-            <p>Auto-sync captured leads in real time to Salesforce, HubSpot, or any major CRM. Includes field mapping, dedup rules, and live status during the event.</p>
-          </div>
-          <div class="price-col">$199<span class="per"> flat</span></div>
-          <div class="qty">
-            <button onclick="adj(this, -1)">−</button>
-            <input type="text" value="0" />
-            <button onclick="adj(this, 1)">+</button>
-          </div>
-          <div class="total-col"><span class="zero">$0</span></div>
-        </div>
-
-        <div class="addon-row" data-price="45" data-name="Additional Profile Questions (5)">
-          <div class="ic">➕</div>
-          <div class="info">
-            <b>Additional Profile Questions (5)</b>
-            <p>Add 5 extra qualifier questions beyond the 5 included in your package. Useful for capturing budget, timeline, decision-maker role, and product interest.</p>
-          </div>
-          <div class="price-col">$45<span class="per"> / block</span></div>
-          <div class="qty">
-            <button onclick="adj(this, -1)">−</button>
-            <input type="text" value="0" />
-            <button onclick="adj(this, 1)">+</button>
-          </div>
-          <div class="total-col"><span class="zero">$0</span></div>
-        </div>
-
-        <div class="addon-row" data-price="450" data-name="API Developer Access">
-          <div class="ic">🔧</div>
-          <div class="info">
-            <b>API Developer Access</b>
-            <p>Full read/write API access for custom integrations. Includes documentation, sandbox environment, and authentication keys for your engineering team.</p>
-          </div>
-          <div class="price-col">$450<span class="per"> flat</span></div>
-          <div class="qty">
-            <button onclick="adj(this, -1)">−</button>
-            <input type="text" value="0" />
-            <button onclick="adj(this, 1)">+</button>
-          </div>
-          <div class="total-col"><span class="zero">$0</span></div>
         </div>
       </div>
 
@@ -1747,178 +1543,13 @@
     </div>
   </div>
 
+  <script src="shared/mock-data.js"></script>
+  <script src="shared/catalog.js"></script>
+  <script src="shared/ui.js"></script>
+  <script src="shared/render.js"></script>
+  <script src="shared/exhibitor.js"></script>
   <script>
-    function showView(view, el) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById('view-' + view).classList.add('active');
-      document.querySelectorAll('.tabs a').forEach(a => a.classList.remove('active'));
-      el.classList.add('active');
-    }
-    function adj(btn, delta) {
-      const parent = btn.parentNode;
-      const input = parent.querySelector('input');
-      const span = parent.querySelector('.num');
-      if (input) {
-        let v = parseInt(input.value) || 0;
-        input.value = Math.max(0, v + delta);
-      } else if (span) {
-        let v = parseInt(span.textContent) || 0;
-        span.textContent = Math.max(0, v + delta);
-      }
-      recalculate();
-    }
-
-    const PACKAGE_PRICE = 699;
-    const PACKAGE_NAME = 'Pro package';
-    const DISCOUNT_RATE = 0.10;
-
-    function collectLineItems() {
-      const items = [{ name: PACKAGE_NAME, qty: 1, subtotal: PACKAGE_PRICE }];
-
-      // Rentals from rental-card
-      document.querySelectorAll('.rental-card[data-price]').forEach(card => {
-        const numEl = card.querySelector('.num');
-        const qty = numEl ? parseInt(numEl.textContent) || 0 : 0;
-        if (qty > 0) {
-          const price = parseFloat(card.dataset.price);
-          items.push({
-            name: card.dataset.name + ' × ' + qty,
-            qty: qty,
-            subtotal: price * qty
-          });
-        }
-      });
-
-      // Add-ons from addon-row
-      document.querySelectorAll('.addon-row[data-price]').forEach(row => {
-        const qtyInput = row.querySelector('.qty input');
-        const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
-        if (qty > 0) {
-          const price = parseFloat(row.dataset.price);
-          items.push({
-            name: row.dataset.name + (qty > 1 ? ' × ' + qty : ''),
-            qty: qty,
-            subtotal: price * qty
-          });
-        }
-      });
-
-      return items;
-    }
-
-    function recalculate() {
-      // 1. Update each addon row's per-row subtotal
-      document.querySelectorAll('.addon-row[data-price]').forEach(row => {
-        const qtyInput = row.querySelector('.qty input');
-        const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
-        const price = parseFloat(row.dataset.price);
-        const subtotal = price * qty;
-        const totalEl = row.querySelector('.total-col');
-        if (totalEl) {
-          if (subtotal === 0) {
-            totalEl.innerHTML = '<span class="zero">$0</span>';
-          } else {
-            totalEl.textContent = '$' + subtotal.toLocaleString();
-          }
-        }
-      });
-
-      // 2. Aggregate line items
-      const items = collectLineItems();
-      const subtotal = items.reduce((s, i) => s + i.subtotal, 0);
-      const discount = Math.round(subtotal * DISCOUNT_RATE);
-      const total = subtotal - discount;
-
-      // 3. Re-render the summary section
-      const summaryRows = document.querySelector('.summary-rows');
-      if (summaryRows) {
-        summaryRows.innerHTML = '';
-        items.forEach(item => {
-          const row = document.createElement('div');
-          row.className = 'row';
-          row.innerHTML = '<div class="lbl">' + item.name + '</div><div class="v">$' + item.subtotal.toLocaleString() + '</div>';
-          summaryRows.appendChild(row);
-        });
-        const discountRow = document.createElement('div');
-        discountRow.className = 'row discount';
-        discountRow.innerHTML = '<div class="lbl">Early-bird discount (−10%)</div><div class="v">−$' + discount.toLocaleString() + '</div>';
-        summaryRows.appendChild(discountRow);
-        const totalRow = document.createElement('div');
-        totalRow.className = 'row total';
-        totalRow.innerHTML = '<div class="lbl">Total</div><div class="v">$' + total.toLocaleString() + '</div>';
-        summaryRows.appendChild(totalRow);
-      }
-
-      // 4. Update the checkout button text
-      const ckBtn = document.querySelector('.summary-actions button.primary');
-      if (ckBtn) ckBtn.textContent = 'Checkout & pay $' + total.toLocaleString() + ' →';
-
-      // 5. Update the order-banner top-right price
-      const banner = document.querySelector('.current-card .price');
-      if (banner && banner.childNodes[0]) {
-        banner.childNodes[0].nodeValue = '$' + total.toLocaleString();
-      }
-    }
-
-    // initial calc on load
-    document.addEventListener('DOMContentLoaded', recalculate);
-
-    function openCheckout() {
-      // Rebuild the modal content with current cart values
-      const items = collectLineItems();
-      const subtotal = items.reduce((s, i) => s + i.subtotal, 0);
-      const discount = Math.round(subtotal * DISCOUNT_RATE);
-      const total = subtotal - discount;
-
-      // First section (order summary) rebuild
-      const body = document.getElementById('checkoutBody');
-      let sumHtml = '<div class="ck-section"><div class="ck-section-lbl">Order summary</div>';
-      items.forEach(item => {
-        sumHtml += '<div class="ck-row"><div>' + item.name + '</div><div>$' + item.subtotal.toLocaleString() + '</div></div>';
-      });
-      sumHtml += '<div class="ck-row" style="color: var(--success);"><div>Early-bird discount (−10%)</div><div>−$' + discount.toLocaleString() + '</div></div>';
-      sumHtml += '<div class="ck-row ck-total"><div>Total to pay</div><div>$' + total.toLocaleString() + '</div></div>';
-      sumHtml += '</div>';
-
-      // Keep payment + billing sections unchanged (rebuild them too for safety)
-      sumHtml += '<div class="ck-section"><div class="ck-section-lbl">Payment method</div>' +
-        '<div class="ck-card"><div class="ck-card-icon">💳</div><div class="ck-card-info">' +
-        '<div class="ck-card-name">Visa •••• 4242</div><div class="ck-card-meta">Exp 04/28 · Default card</div>' +
-        '</div><a href="#" class="ck-change">Change</a></div></div>';
-      sumHtml += '<div class="ck-section"><div class="ck-section-lbl">Billing</div>' +
-        '<div class="ck-billing"><strong>Sarah Chen</strong><br/>Contoso Inc.<br/>1500 Innovation Way, Suite 400<br/>San Jose, CA 95134</div></div>';
-
-      body.innerHTML = sumHtml;
-      body.style.display = 'block';
-
-      // Update confirm button text
-      const foot = document.getElementById('checkoutFoot');
-      foot.innerHTML = '<button onclick="closeCheckout()">Cancel</button>' +
-        '<button class="primary" onclick="confirmPayment(' + total + ')">Confirm payment $' + total.toLocaleString() + '</button>';
-      foot.style.display = 'flex';
-
-      document.getElementById('checkoutSuccess').style.display = 'none';
-      document.getElementById('checkoutModal').classList.add('open');
-    }
-    function closeCheckout() {
-      document.getElementById('checkoutModal').classList.remove('open');
-    }
-    function confirmPayment(total) {
-      document.getElementById('checkoutBody').style.display = 'none';
-      document.getElementById('checkoutFoot').style.display = 'none';
-      const success = document.getElementById('checkoutSuccess');
-      // Update the amount paid in the success state
-      const meta = success.querySelector('.ck-success-meta');
-      if (meta && total) {
-        const amt = meta.querySelector('div:first-child strong');
-        if (amt) amt.textContent = '$' + total.toLocaleString();
-      }
-      success.style.display = 'block';
-    }
-    // close on overlay click
-    document.getElementById('checkoutModal').addEventListener('click', e => {
-      if (e.target.id === 'checkoutModal') closeCheckout();
-    });
+    document.addEventListener('DOMContentLoaded', () => LR.exhibitor.init());
   </script>
 </body>
 </html>
